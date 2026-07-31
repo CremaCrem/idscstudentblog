@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import styles from './Modal.module.css';
+import { X } from 'lucide-react';
 
 export interface ModalProps {
   isOpen: boolean;
@@ -23,18 +23,22 @@ export const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }
   if (!isOpen) return null;
 
   return (
-    <div className={styles.overlay}>
-      <div className={styles.backdrop} onClick={onClose} />
-      <div className={styles.modalContent} role="dialog" aria-modal="true">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 animate-in fade-in duration-200">
+      <div className="absolute inset-0 bg-stone-900/40 backdrop-blur-sm" onClick={onClose} />
+      <div className="relative w-full max-w-lg bg-white rounded-2xl shadow-xl border border-zinc-200 overflow-hidden animate-in zoom-in-95 duration-200" role="dialog" aria-modal="true">
         {title && (
-          <div className={styles.header}>
-            <h3 className={styles.title}>{title}</h3>
-            <button className={styles.closeButton} onClick={onClose} aria-label="Close">
-              ×
+          <div className="flex items-center justify-between px-6 py-4 border-b border-zinc-100">
+            <h3 className="text-lg font-semibold text-zinc-900 m-0">{title}</h3>
+            <button 
+              className="text-zinc-400 hover:text-zinc-600 transition-colors bg-transparent border-none cursor-pointer p-1 rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-800" 
+              onClick={onClose} 
+              aria-label="Close"
+            >
+              <X className="w-5 h-5" />
             </button>
           </div>
         )}
-        <div className={styles.body}>
+        <div className="px-6 py-4">
           {children}
         </div>
       </div>

@@ -1,5 +1,4 @@
 import React from 'react';
-import styles from './Card.module.css';
 
 export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
   hoverEffect?: boolean;
@@ -8,8 +7,8 @@ export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
 export const Card = React.forwardRef<HTMLDivElement, CardProps>(
   ({ className = '', hoverEffect = false, children, ...props }, ref) => {
     const classNames = [
-      styles.card,
-      hoverEffect ? styles['card-hover'] : '',
+      "bg-white rounded-2xl shadow-md overflow-hidden transition-all duration-200",
+      hoverEffect ? "hover:-translate-y-1 hover:shadow-xl" : "",
       className
     ].filter(Boolean).join(' ');
 

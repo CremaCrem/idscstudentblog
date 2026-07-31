@@ -4,8 +4,25 @@
  * @returns {{ isValid: boolean, errors: Array<{field: string, issue: string}> }}
  */
 const validateRegisterInput = (body) => {
-  const { username, email, password, role } = body || {};
+  const { fullName, studentId, username, email, password, role } = body || {};
   const errors = [];
+
+  // Full Name validation
+  if (!fullName || typeof fullName !== 'string') {
+    errors.push({ field: 'fullName', issue: 'Full Name is required.' });
+  } else {
+    const trimmedFullName = fullName.trim();
+    if (trimmedFullName.length < 2 || trimmedFullName.length > 100) {
+      errors.push({ field: 'fullName', issue: 'Full Name must be between 2 and 100 characters.' });
+    }
+  }
+
+  // Student ID validation
+  if (!studentId || typeof studentId !== 'string') {
+    errors.push({ field: 'studentId', issue: 'Student ID Number is required.' });
+  } else if (!studentId.trim()) {
+    errors.push({ field: 'studentId', issue: 'Student ID Number cannot be empty.' });
+  }
 
   // Username validation: Alphanumeric (3-20 characters)
   if (!username || typeof username !== 'string') {

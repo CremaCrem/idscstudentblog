@@ -10,17 +10,31 @@
 
 ### 1.2 Registered Student
 * **Authentication:** Register and log in using unique username and password credentials.
-* **Profile Management:** View a personal dashboard containing all submitted links and their publication status.
+* **Identity Verification:** Registration does **not** grant immediate access. Every student must submit their:
+  * **Full Name** (legal name as registered with IDSC)
+  * **Student ID Number** (unique IDSC-issued identifier)
+  * **Username**, **Email**, and **Password**
+* **Pre-Submission Review:**
+  * **Registration Review:** Before dispatching the registration request, students must review a summary modal (`<FormReviewModal />`) displaying their entered Full Name, Student ID, Username, and Email (Password masked) to prevent typos that cause admin rejection.
+  * **Blog Submission Preview:** Before saving a blog post link, the submission modal transitions to a Step 2 live `<Card />` preview screen allowing the student to inspect title, tags, and formatting.
+* **Account Status:** After registration, the account is created with `verificationStatus = "pending"`. The student **cannot log in** until an administrator approves the account.
+* **Login Gate:** A student who attempts to log in while `pending` or `rejected` receives a clear status message explaining their account state.
+* **Profile Management:** View a personal dashboard containing all submitted links and their publication status (visible only after account approval).
 * **Submission Workflow:** 
   * Paste a URL to submit a blog post.
   * Enter or override the post **Title** and **Thumbnail Image URL**.
   * Attach single or multiple **Genre Tags** with real-time suggestion/autocomplete support.
-* **Post Management:** Edit target URLs, titles, images, or genre tags, and delete personal submissions.
+  * Review the live preview before final submission.
+* **Post Management:** Edit target URLs, titles, images, or genre tags, and delete personal submissions (deletions require a `<ConfirmationModal />`).
 
 ### 1.3 Administrator (Admin)
 * **All Student Capabilities:** Full permissions to create and manage personal posts.
 * **Content Moderation:** Toggle `isPublished` status on any student post or delete problematic posts.
 * **Automated Link Health Check:** Trigger batch HTTP verification on all database links to detect 404/500 errors or connection timeouts.
+* **Student Identity Verification:** Review the pending registration queue and verify each student's **Full Name** and **Student ID Number** against the IDSC student roster.
+  * **Approve** an account: Sets `verificationStatus = "approved"` and records `verifiedAt` and `verifiedBy`.
+  * **Reject** an account: Sets `verificationStatus = "rejected"` and optionally records a reason.
+  * **Delete** a rejected or erroneous registration to release the `studentId` and `email` for re-registration.
 * **User Management:** Ability to revoke user posting access or delete accounts if necessary.
 
 ## 2. Non-Functional Requirements
@@ -39,3 +53,9 @@
 ### 2.3 Reliability & Fallbacks
 * If a student leaves title or thumbnail fields blank during submission, default to scraped Open Graph metadata or fallback generic assets.
 * Non-HTTPS preview thumbnails must be sanitized or mapped to fallback HTTPS placeholders to prevent mixed-content browser warnings.
+
+### 2.4 Identity Verification
+* The platform is restricted exclusively to Institute of Data Science and Computing (IDSC) students.
+* No institutional email addresses are available for automated email-domain verification; verification is manual.
+* OAuth is not used. Verification is performed entirely by the administrator against the IDSC student roster.
+* Expected user count: approximately 100 students. Manual verification is an acceptable and deliberate design choice at this scale.

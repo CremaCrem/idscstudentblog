@@ -11,12 +11,15 @@
 ```text
 [ React Client (Browser) ]
   ├── Tag Autocomplete & Search Bar
-  └── Blog Feed & Submission Modal
+  ├── Blog Feed & 2-Step Submission Wizard
+  ├── Pre-Submission Verification Layer (<FormReviewModal />)
+  └── Auth Flow: Register -> Pre-Submit Review -> Pending Approval -> Login (on Approval)
        │
        │ HTTP / REST API (JSON)
        ▼
 [ Node.js + Express API ]
-  ├── Auth Middleware (JWT)
+  ├── Auth Middleware (JWT + verificationStatus Gate)
+  ├── IDSC Student Verification Layer (Pending / Approve / Reject)
   ├── Tag Autocomplete & Filter Service
   ├── Link Scraper Module (open-graph-scraper)
   └── Link Health Verification Engine

@@ -6,60 +6,63 @@ class AuthService {
   /**
    * Registers a new user account
    */
-  async registerUser({ username, email, password, role }) {
+  async registerUser({ fullName, studentId, username, email, password, role }) {
     const sanitizedUsername = username.trim().toLowerCase();
     const sanitizedEmail = email.trim().toLowerCase();
+    const sanitizedStudentId = studentId.trim().toUpperCase();
 
-    // Check for duplicate username or email
+    // Check for duplicate username, email, or studentId
     const existingUser = await User.findOne({
-      $or: [{ username: sanitizedUsername }, { email: sanitizedEmail }]
+      $or: [
+        { username: sanitizedUsername },
+        { email: sanitizedEmail },
+        { studentId: sanitizedStudentId }
+      ]
     });
 
     if (existingUser) {
-      const isDuplicateEmail = existingUser.email === sanitizedEmail;
-      const error = new Error(
-        isDuplicateEmail
-          ? 'An account with this email address already exists.'
-          : 'This username is already taken.'
-      );
+      let field = 'username';
+      let issue = 'Username is already taken.';
+      
+      if (existingUser.studentId === sanitizedStudentId) {
+        field = 'studentId';
+        issue = 'Student ID already registered. If you recently submitted a registration, your account is pending admin review.';
+      } else if (existingUser.email === sanitizedEmail) {
+        field = 'email';
+        issue = 'Email is already registered.';
+      }
+
+      const error = new Error(issue);
       error.statusCode = 409;
       error.code = 'CONFLICT_ERROR';
-      error.details = [
-        {
-          field: isDuplicateEmail ? 'email' : 'username',
-          issue: isDuplicateEmail ? 'Email is already registered.' : 'Username is already taken.'
-        }
-      ];
+      error.details = [{ field, issue }];
       throw error;
     }
 
     // Hash password
     const hashedPassword = await hashPassword(password);
 
-    // Persist new user
+    // Persist new user with pending status
     const newUser = await User.create({
+      fullName: fullName.trim(),
+      studentId: sanitizedStudentId,
       username: sanitizedUsername,
       email: sanitizedEmail,
       password: hashedPassword,
-      role: role || 'student'
+      role: role || 'student',
+      verificationStatus: 'pending'
     });
 
-    // Issue JWT token
-    const token = signToken({
-      userId: newUser._id.toString(),
-      username: newUser.username,
-      role: newUser.role
-    });
-
+    // We do NOT issue a JWT token here because the account is pending approval
     return {
       user: {
         id: newUser._id.toString(),
         username: newUser.username,
         email: newUser.email,
         role: newUser.role,
+        verificationStatus: newUser.verificationStatus,
         createdAt: newUser.createdAt
-      },
-      token
+      }
     };
   }
 
@@ -88,6 +91,22 @@ class AuthService {
       error.statusCode = 401;
       error.code = 'UNAUTHORIZED';
       throw error;
+    }
+
+    // Check verification status (skip for admins)
+    if (user.role !== 'admin') {
+      if (user.verificationStatus === 'pending') {
+        const error = new Error('Your account is pending administrator verification. Please wait for approval before logging in.');
+        error.statusCode = 403;
+        error.code = 'ACCOUNT_PENDING_APPROVAL';
+        throw error;
+      }
+      if (user.verificationStatus === 'rejected') {
+        const error = new Error('Your registration was not approved. Please contact the IDSC administrator for more information.');
+        error.statusCode = 403;
+        error.code = 'ACCOUNT_REJECTED';
+        throw error;
+      }
     }
 
     // Issue JWT token

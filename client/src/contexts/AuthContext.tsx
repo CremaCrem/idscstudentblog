@@ -52,12 +52,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const register = async (payload: RegisterPayload) => {
-    const response = await authApi.register(payload);
-    if (response.token && response.user) {
-      localStorage.setItem('token', response.token);
-      setToken(response.token);
-      setUser(response.user);
-    }
+    // Note: register now returns a success message and pending status,
+    // it no longer returns a token and does not log the user in immediately.
+    await authApi.register(payload);
   };
 
   const logout = async () => {

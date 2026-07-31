@@ -1,4 +1,5 @@
 import React from 'react';
+import { X } from 'lucide-react';
 
 interface TagPillProps {
   label: string;
@@ -11,13 +12,14 @@ export const TagPill: React.FC<TagPillProps> = ({ label, onRemove, isActive = tr
   return (
     <span 
       className={`
-        inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-medium transition-colors
-        ${isActive ? 'bg-primary/10 text-primary border border-primary/20' : 'bg-surface text-text-secondary border border-border'}
-        ${onClick ? 'cursor-pointer hover:bg-primary/20' : ''}
+        inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-medium transition-colors border
+        ${isActive ? 'bg-emerald-800 text-white border-emerald-800' : 'bg-stone-100 text-stone-700 border-transparent'}
+        ${onClick && !isActive ? 'cursor-pointer hover:bg-stone-200' : ''}
+        ${onClick && isActive ? 'cursor-pointer hover:bg-emerald-900' : ''}
       `}
       onClick={onClick}
     >
-      <span className="font-semibold text-primary/60">#</span>
+      {!isActive && <span className="font-semibold text-stone-400">#</span>}
       {label}
       
       {onRemove && (
@@ -27,12 +29,10 @@ export const TagPill: React.FC<TagPillProps> = ({ label, onRemove, isActive = tr
             e.stopPropagation();
             onRemove();
           }}
-          className="ml-1 text-primary/60 hover:text-primary transition-colors focus:outline-none"
+          className={`ml-1 rounded transition-colors focus-visible:outline-none focus-visible:ring-2 ${isActive ? 'text-white/70 hover:text-white focus-visible:ring-white' : 'text-stone-400 hover:text-stone-700 focus-visible:ring-emerald-800'}`}
           aria-label={`Remove tag ${label}`}
         >
-          <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-          </svg>
+          <X className="w-3.5 h-3.5" />
         </button>
       )}
     </span>

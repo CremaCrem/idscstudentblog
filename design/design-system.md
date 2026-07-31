@@ -88,7 +88,7 @@ Whitespace is a feature.
 
 Purpose
 
-Entire application background.
+Entire application background (Soft off-white leaning clean white).
 
 Tailwind
 
@@ -99,7 +99,7 @@ bg-stone-50
 Hex
 
 ```
-#F8F6F0
+#FAF9F5
 ```
 
 ---
@@ -178,7 +178,7 @@ Hex
 
 ---
 
-## Primary Accent
+## Primary Accent (IDSC Emerald)
 
 Purpose
 
@@ -188,17 +188,19 @@ Links
 
 Highlights
 
+IDSC Brand Alignment
+
 Tailwind
 
 ```
-bg-orange-700
-hover:bg-orange-800
+bg-emerald-800
+hover:bg-emerald-900
 ```
 
 Approximate Hex
 
 ```
-#A84320
+#065F46
 ```
 
 ---
@@ -454,9 +456,9 @@ Primary Button
 Use
 
 ```
-bg-orange-700
+bg-emerald-800
 
-hover:bg-orange-800
+hover:bg-emerald-900
 
 text-white
 
@@ -512,9 +514,9 @@ py-3
 
 focus:ring-2
 
-focus:ring-orange-600
+focus:ring-emerald-800
 
-focus:border-orange-600
+focus:border-emerald-800
 ```
 
 ---
@@ -568,7 +570,7 @@ font-medium
 Selected
 
 ```
-bg-orange-700
+bg-emerald-800
 
 text-white
 ```
@@ -695,6 +697,35 @@ Avoid excessive nesting.
 
 ---
 
+# Confirmation Modal Rule
+
+The application **must not** use `window.confirm()`, `window.prompt()`, or `window.alert()`.
+
+All user confirmations and destructive action flows must use the reusable `<ConfirmationModal />` component.
+
+See `design/interaction-patterns.md` Section 4 for the full specification.
+
+This applies to:
+
+- Approving student registrations
+- Rejecting student registrations
+- Deleting user accounts
+- Deleting blog posts
+- Unpublishing content
+- All future irreversible or state-altering actions
+
+Native browser dialogs are a design system violation.
+
+---
+
+# Pre-Submission Review & Modal Anti-Stacking Rule
+
+1. **Separation of Concerns:** Action confirmations (`<ConfirmationModal />`) must be separated from pre-submission data review (`<FormReviewModal />` or in-modal wizard).
+2. **No Stacked Modals:** Modals must **never** stack on top of other modals (`z-index` stacking, multiple backdrops). If a form is inside a modal (e.g., `SubmitModal`), pre-submission review must occur via an internal step transition within that same modal shell.
+3. **Sensitive Field Masking:** Password inputs must be masked (`••••••••`) in all review screens.
+
+See `design/interaction-patterns.md` Section 6 for full specification.
+
 # AI Compliance Checklist
 
 Before completing any UI implementation verify:
@@ -716,6 +747,10 @@ Before completing any UI implementation verify:
 ✓ Reusable
 
 ✓ Matches documented layouts
+
+✓ No `window.confirm()`, `window.prompt()`, or `window.alert()` — uses `<ConfirmationModal />` instead
+
+✓ No stacked/nested modals — uses `<FormReviewModal />` for page forms and 2-step wizard for modal forms
 
 If any rule is violated:
 

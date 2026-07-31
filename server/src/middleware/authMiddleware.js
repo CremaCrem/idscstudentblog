@@ -44,23 +44,26 @@ const authGuard = (req, res, next) => {
 };
 
 /**
- * Middleware: Enforces Admin Role Access (RBAC)
+ * Middleware: Enforces Role-Based Access Control (RBAC)
+ * @param {...string} roles Allowed roles (e.g. 'student', 'admin')
  */
-const adminGuard = (req, res, next) => {
-  if (!req.user || req.user.role !== 'admin') {
-    return res.status(403).json({
-      success: false,
-      error: {
-        code: 'FORBIDDEN',
-        message: 'Access denied. Elevated administrative privileges are required.',
-        timestamp: new Date().toISOString()
-      }
-    });
-  }
-  next();
+const authorizeRoles = (...roles) => {
+  return (req, res, next) => {
+    if (!req.user || !roles.includes(req.user.role)) {
+      return res.status(403).json({
+        success: false,
+        error: {
+          code: 'FORBIDDEN',
+          message: 'Access denied. Elevated administrative privileges are required.',
+          timestamp: new Date().toISOString()
+        }
+      });
+    }
+    next();
+  };
 };
 
 module.exports = {
   authGuard,
-  adminGuard
+  authorizeRoles
 };

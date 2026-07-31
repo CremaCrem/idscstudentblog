@@ -22,12 +22,47 @@ const userSchema = new mongoose.Schema(
     password: {
       type: String,
       required: [true, 'Password is required'],
-      minlength: [6, 'Password must be at least 6 characters']
+      minlength: [8, 'Password must be at least 8 characters']
     },
     role: {
       type: String,
       enum: ['student', 'admin'],
       default: 'student'
+    },
+    fullName: {
+      type: String,
+      required: [true, 'Full Name is required'],
+      trim: true,
+      minlength: [2, 'Full Name must be at least 2 characters'],
+      maxlength: [100, 'Full Name cannot exceed 100 characters']
+    },
+    studentId: {
+      type: String,
+      required: [true, 'Student ID Number is required'],
+      unique: true,
+      trim: true,
+      uppercase: true,
+      index: true
+    },
+    verificationStatus: {
+      type: String,
+      enum: ['pending', 'approved', 'rejected'],
+      default: 'pending',
+      index: true
+    },
+    rejectionReason: {
+      type: String,
+      trim: true,
+      default: ''
+    },
+    verifiedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      default: null
+    },
+    verifiedAt: {
+      type: Date,
+      default: null
     }
   },
   {
@@ -40,6 +75,8 @@ const userSchema = new mongoose.Schema(
     }
   }
 );
+
+userSchema.index({ verificationStatus: 1, createdAt: -1 });
 
 // Indexes for fast lookup
 userSchema.index({ email: 1, username: 1 });

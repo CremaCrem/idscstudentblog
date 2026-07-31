@@ -25,13 +25,16 @@ class AuthController {
 
       const { user, token } = await authService.registerUser(req.body);
 
-      // Set HTTP-only secure cookie
-      res.cookie('token', token, getCookieOptions());
+      // We only set token if it's issued (e.g. for admins if modified later, but currently undefined for pending)
+      if (token) {
+        res.cookie('token', token, getCookieOptions());
+      }
 
       return res.status(201).json({
         success: true,
-        token,
-        user
+        message: 'Registration submitted successfully. Your account is pending admin approval.',
+        data: { status: 'pending' },
+        user // Can also keep returning user for potential frontend use, though data.status is required by contract
       });
     } catch (error) {
       next(error);

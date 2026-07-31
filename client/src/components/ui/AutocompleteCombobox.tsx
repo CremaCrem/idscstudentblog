@@ -97,7 +97,7 @@ export const AutocompleteCombobox: React.FC<AutocompleteComboboxProps> = ({
 
   return (
     <div className="w-full relative" ref={wrapperRef}>
-      <div className="flex flex-wrap items-center gap-2 p-2 border border-border rounded-lg bg-surface focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20 transition-all">
+      <div className="flex flex-wrap items-center gap-2 p-2 border border-zinc-200 rounded-xl bg-white focus-within:border-emerald-800 focus-within:ring-2 focus-within:ring-emerald-800/20 transition-all min-h-[52px]">
         {selectedTags.map(tag => (
           <TagPill
             key={tag}
@@ -118,30 +118,30 @@ export const AutocompleteCombobox: React.FC<AutocompleteComboboxProps> = ({
               }
             }}
             placeholder={selectedTags.length === 0 ? placeholder : ''}
-            className="flex-1 min-w-[120px] bg-transparent outline-none text-text-primary text-sm p-1"
+            className="flex-1 min-w-[120px] bg-transparent outline-none text-zinc-900 text-sm p-1"
           />
         )}
       </div>
 
       {/* Dropdown Menu */}
       {isDropdownOpen && (inputValue.trim() || suggestions.length > 0) && (
-        <div className="absolute z-10 w-full mt-1 bg-surface border border-border rounded-lg shadow-lg overflow-hidden flex flex-col max-h-60 overflow-y-auto">
+        <div className="absolute z-10 w-full mt-1 bg-white border border-zinc-200 rounded-xl shadow-lg overflow-hidden flex flex-col max-h-60 overflow-y-auto p-1">
           {suggestions.length > 0 ? (
             suggestions.map((suggestion, index) => (
               <div
                 key={suggestion}
-                className={`px-4 py-2 cursor-pointer text-sm transition-colors ${
-                  highlightedIndex === index ? 'bg-primary/10 text-primary' : 'text-text-primary hover:bg-surface-hover'
+                className={`px-4 py-2 cursor-pointer text-sm transition-colors rounded-lg ${
+                  highlightedIndex === index ? 'bg-emerald-50 text-emerald-800' : 'text-zinc-900 hover:bg-stone-50 hover:text-emerald-800'
                 }`}
                 onClick={() => addTag(suggestion)}
                 onMouseEnter={() => setHighlightedIndex(index)}
               >
-                <span className="text-primary/60 mr-2">#</span>
+                <span className="text-emerald-800/60 mr-2">#</span>
                 {suggestion}
               </div>
             ))
           ) : (
-            <div className="px-4 py-3 text-sm text-text-secondary italic">
+            <div className="px-4 py-3 text-sm text-zinc-500 italic">
               Press Enter to add "{inputValue}"
             </div>
           )}
@@ -149,7 +149,7 @@ export const AutocompleteCombobox: React.FC<AutocompleteComboboxProps> = ({
       )}
       
       {/* Helper text */}
-      <div className="mt-1 flex justify-between text-xs text-text-secondary">
+      <div className="mt-1 flex justify-between text-xs text-zinc-500">
         <span>{maxTags - selectedTags.length} tags remaining</span>
         {inputValue && !isDropdownOpen && <span>Press Enter to add</span>}
       </div>

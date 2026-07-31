@@ -511,3 +511,35 @@ Consistency over cleverness.
 Maintainability over short-term speed.
 
 The best code is the simplest code that fully satisfies the documented requirements.
+
+# TypeScript Rules
+
+## Type Imports
+
+Always use:
+
+```ts
+import type { User } from './types';
+```
+
+or
+
+```ts
+import { type User } from './types';
+```
+
+Never import interfaces or type aliases as runtime imports.
+
+This applies to:
+
+- interface
+- type
+- Props
+- Response DTOs
+- API payloads
+
+Reason:
+
+The project uses Vite + ESM where TypeScript types are erased during compilation.
+
+Using runtime imports for interfaces causes runtime module loading errors.

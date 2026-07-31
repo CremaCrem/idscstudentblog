@@ -7,6 +7,8 @@ const rateLimit = require('express-rate-limit');
 
 const authRoutes = require('./routes/authRoutes');
 const tagRoutes = require('./routes/tagRoutes');
+const adminRoutes = require('./routes/adminRoutes');
+const userRoutes = require('./routes/userRoutes');
 
 const app = express();
 
@@ -61,6 +63,10 @@ const authRateLimiter = rateLimit({
 // API Routes
 app.use('/api/v1/auth', authRateLimiter, authRoutes);
 app.use('/api/v1/tags', tagRoutes);
+app.use('/api/v1/blogs', require('./routes/blogRoutes'));
+app.use('/api/v1/admin', adminRoutes);
+app.use('/api/v1/users', userRoutes);
+app.use('/api/v1/upload', require('./routes/uploadRoutes'));
 
 // Health check endpoint
 app.get('/health', (req, res) => {

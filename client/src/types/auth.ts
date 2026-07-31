@@ -1,10 +1,18 @@
 export type UserRole = 'student' | 'admin';
 
+export type VerificationStatus = 'pending' | 'approved' | 'rejected';
+
 export interface User {
   id: string;
   username: string;
   email: string;
   role: UserRole;
+  fullName?: string;
+  studentId?: string;
+  verificationStatus?: VerificationStatus;
+  rejectionReason?: string;
+  verifiedBy?: string;
+  verifiedAt?: string;
   createdAt?: string;
 }
 
@@ -21,6 +29,8 @@ export interface AuthResponse {
 }
 
 export interface RegisterPayload {
+  fullName: string;
+  studentId: string;
   username: string;
   email: string;
   password: string;

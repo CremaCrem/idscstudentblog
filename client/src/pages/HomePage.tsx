@@ -1,93 +1,144 @@
-import React from 'react';
-import { Card } from '../components/ui/Card';
-import { Badge } from '../components/ui/Badge';
-import styles from './HomePage.module.css';
+import React, { useState, useEffect } from 'react';
+import { TagFilterBar } from '../components/feed/TagFilterBar';
+import { HeroFeaturedCard } from '../components/feed/HeroFeaturedCard';
+import { BlogGridCard } from '../components/feed/BlogGridCard';
+import { blogService, type BlogPost } from '../services/blog';
 
-const MOCK_POSTS = [
-  { id: 1, title: "Building a Decentralized Search Engine", author: "Alex K", tag: "Software Engineering", readTime: "5 min", date: "Aug 10", featured: true, image: "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80" },
-  { id: 2, title: "Yield Prediction with CNNs", author: "Maria S", tag: "Agriculture", readTime: "8 min", date: "Aug 09", image: "https://images.unsplash.com/photo-1605000797499-95a51c5269ae?auto=format&fit=crop&w=800&q=80" },
-  { id: 3, title: "Zero-Knowledge Proofs in Voting", author: "James T", tag: "Information Technology", readTime: "6 min", date: "Aug 08", image: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=800&q=80" },
-  { id: 4, title: "Designing Tactile Interfaces", author: "Elena R", tag: "Design", readTime: "4 min", date: "Aug 07", image: "https://images.unsplash.com/photo-1561070791-2526d30994b5?auto=format&fit=crop&w=800&q=80" }
+
+// Available tags based on previous wireframes/requirements
+const AVAILABLE_TAGS = [
+    "artificial intelligence",
+    "information technology",
+    "agriculture",
+    "design",
+    "software engineering",
+    "cybersecurity",
+    "machine learning",
+    "robotics"
 ];
 
 export const HomePage: React.FC = () => {
-  const featured = MOCK_POSTS[0];
-  const others = MOCK_POSTS.slice(1);
+    const [selectedTag, setSelectedTag] = useState<string | null>(null);
+    const [featuredPosts, setFeaturedPosts] = useState<BlogPost[]>([]);
+    const [gridPosts, setGridPosts] = useState<BlogPost[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
-  return (
-    <div className={styles.container}>
-      <header className={styles.hero}>
-        <h1 className="text-display">Student Blog Directory</h1>
-        <p className={styles.subtitle}>Discover technical logs, capstone research, and engineering write-ups from university students.</p>
-      </header>
+    useEffect(() => {
+        const fetchFeedData = async () => {
+            setIsLoading(true);
+            setError(null);
+            try {
+            let currentFeatured: BlogPost[] = [];
+            // If there's no tag selected, fetch featured posts for the hero section
+            if (!selectedTag) {
+                currentFeatured = await blogService.getFeaturedBlogs();
+                setFeaturedPosts(currentFeatured);
+            } else {
+                // Hide hero section when filtering by tag
+                setFeaturedPosts([]);
+            }
 
-      {/* Tag Filter Bar */}
-      <div className={styles.filterBar}>
-        <div className={styles.filterTabs}>
-          <Badge variant="default" className={styles.activeTab}>View All</Badge>
-          <Badge variant="default">Artificial Intelligence</Badge>
-          <Badge variant="default">Information Technology</Badge>
-          <Badge variant="default">Agriculture</Badge>
-          <Badge variant="default">Design</Badge>
-          <Badge variant="default">Software Engineering</Badge>
-        </div>
-      </div>
+            // Fetch grid posts with optional tag filtering
+            const params = selectedTag ? { tag: selectedTag } : {};
+            const blogsResponse = await blogService.getBlogs(params);
 
-      <section className={styles.featuredSection}>
-        <Card hoverEffect className={styles.featuredCard}>
-          <div className={styles.featuredImageWrapper}>
-            <img src={featured.image} alt="Featured" className={styles.featuredImage} />
-            <div className={`glass-overlay ${styles.featuredOverlay}`}>
-              <Badge variant="default">[{featured.tag}]</Badge>
-              <h2 className={styles.featuredTitle}>{featured.title}</h2>
-              <div className={styles.featuredMeta}>{featured.author} • {featured.date} • {featured.readTime} read</div>
-            </div>
-          </div>
-        </Card>
-        
-        <div className={styles.latestList}>
-          <h3 className={styles.listHeader}>Latest Posts</h3>
-          <div className={styles.listGrid}>
-            {others.map(post => (
-              <Card key={post.id} hoverEffect className={styles.listCard}>
-                <div className={styles.listCardImageWrapper}>
-                  <img src={post.image} alt={post.title} />
+            // If we are showing featured posts, don't duplicate them in the grid
+            if (!selectedTag && blogsResponse.data && currentFeatured.length > 0) {
+                // Filter out featured posts from the main grid
+                const featuredIds = new Set(currentFeatured.map(p => p._id));
+                    setGridPosts(blogsResponse.data.filter(p => !featuredIds.has(p._id)));
+                } else {
+                    setGridPosts(blogsResponse.data);
+                }
+
+            } catch (err: any) {
+                console.error("Failed to fetch feed data", err);
+                setError("Unable to load the blog feed. Please try again later.");
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchFeedData();
+    }, [selectedTag]);
+
+    return (
+        <div className="w-full max-w-7xl mx-auto px-6 py-12">
+            <header className="text-center mb-12 animate-in slide-in-from-bottom-4 duration-500">
+                <h1 className="text-5xl font-bold font-display text-zinc-900 tracking-tight">Student Blog Directory</h1>
+                <p className="text-lg max-w-2xl mx-auto text-zinc-600 mt-4">Discover technical logs, capstone research, and engineering write-ups from university students.</p>
+            </header>
+
+            <TagFilterBar
+                tags={AVAILABLE_TAGS}
+                selectedTag={selectedTag}
+                onSelectTag={setSelectedTag}
+            />
+
+            {error && (
+                <div className="p-4 bg-red-50 border border-red-200 rounded-xl text-red-600 text-center mb-8">
+                    {error}
                 </div>
-                <div className={styles.listCardContent}>
-                  <div className={styles.listCardMeta}>
-                    <span>{post.author}</span>
-                    <Badge variant="default">{post.tag}</Badge>
-                  </div>
-                  <h4 className={styles.listCardTitle}>{post.title}</h4>
-                  <div className={styles.listCardAction}>Read post <span className={styles.arrow}>↗</span></div>
+            )}
+
+            {isLoading ? (
+                // Loading Skeleton State
+                <div className="animate-pulse">
+                    {!selectedTag && (
+                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16">
+                            <div className="lg:col-span-2 h-[500px] bg-zinc-200 rounded-2xl"></div>
+                            <div className="flex flex-col gap-6">
+                                <div className="h-6 w-32 bg-zinc-200 rounded mb-4"></div>
+                                <div className="h-[120px] bg-zinc-200 rounded-2xl"></div>
+                                <div className="h-[120px] bg-zinc-200 rounded-2xl"></div>
+                            </div>
+                        </div>
+                    )}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                        {[1, 2, 3, 4, 5, 6].map(i => (
+                            <div key={i} className="h-[320px] bg-zinc-200 rounded-2xl"></div>
+                        ))}
+                    </div>
                 </div>
-              </Card>
-            ))}
-          </div>
+            ) : (
+                <>
+                    {/* Hero Section (Only shown when not filtering by tag) */}
+                    {!selectedTag && featuredPosts.length > 0 && (
+                        <HeroFeaturedCard featuredPosts={featuredPosts} />
+                    )}
+
+                    {/* 3-Column Content Grid */}
+                    <section className="mb-12">
+                        {gridPosts.length > 0 ? (
+                            <>
+                                <h3 className="text-2xl font-semibold text-zinc-900 mb-6 mt-0">
+                                    {selectedTag ? `Posts tagged with "${selectedTag}"` : 'More from the community'}
+                                </h3>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                                    {gridPosts.map(post => (
+                                        <BlogGridCard key={post._id} post={post} />
+                                    ))}
+                                </div>
+                            </>
+                        ) : (
+                            <div className="text-center py-24 bg-stone-50 border border-zinc-200 rounded-2xl border-dashed">
+                                <h3 className="text-xl font-semibold text-zinc-900 mb-2">No posts found</h3>
+                                <p className="text-zinc-500 mb-6">There are no published blog posts for this category yet.</p>
+                                {selectedTag && (
+                                    <button
+                                        onClick={() => setSelectedTag(null)}
+                                        className="px-4 py-2 bg-zinc-900 text-white rounded-xl font-medium hover:bg-black transition-colors"
+                                    >
+                                        Clear Filter
+                                    </button>
+                                )}
+                            </div>
+                        )}
+                    </section>
+                </>
+            )}
         </div>
-      </section>
-      
-      {/* 3-Column Content Grid */}
-      <section className={styles.gridSection}>
-        <h3 className="text-section-head" style={{marginBottom: '1.5rem'}}>More from the community</h3>
-        <div className={styles.grid}>
-           {MOCK_POSTS.map(post => (
-              <Card key={`grid-${post.id}`} hoverEffect className={styles.gridCard}>
-                <div className={styles.gridImageWrapper}>
-                  <img src={post.image} alt={post.title} />
-                  <div className={styles.gridAuthorTag}>
-                    <Badge variant="default">{post.author} • {post.tag}</Badge>
-                  </div>
-                </div>
-                <div className={styles.gridContent}>
-                  <h4 className={styles.gridTitle}>{post.title}</h4>
-                  <p className={styles.gridDesc}>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore.</p>
-                  <div className={styles.gridAction}>Read post <span>↗</span></div>
-                </div>
-              </Card>
-            ))}
-        </div>
-      </section>
-    </div>
-  );
+    );
 };
+
