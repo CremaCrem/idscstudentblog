@@ -14,7 +14,7 @@ export const Navbar: React.FC = () => {
       <div className="flex h-16 items-center justify-between px-6 lg:px-10">
         <div className="flex items-center">
           <Link to="/" className="text-xl font-bold font-display flex items-center gap-1 hover:opacity-80 transition-opacity">
-            IDSC Student Hub <ArrowUpRight className="w-5 h-5 text-emerald-800" />
+            IDSC Pulse <ArrowUpRight className="w-5 h-5 text-emerald-800" />
           </Link>
         </div>
         

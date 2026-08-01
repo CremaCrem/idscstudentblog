@@ -40,9 +40,10 @@
 ## 2. Non-Functional Requirements
 
 ### 2.1 Performance
-* Open Graph scraping must time out within **4.0 seconds** to prevent API blocking when student overrides are not provided.
+* Open Graph scraping and SSRF pre-flight validation must time out within **5.0 seconds** (5000ms) to prevent API blocking when student overrides are not provided.
 * Tag autocomplete queries must return matching suggestions within **100ms**.
 * Health check requests must be non-blocking and execute asynchronously or with strict per-link timeouts (3.0s).
+* Client HTTP requests must configure an extended network timeout threshold of **45 to 60 seconds** in `apiClient.ts` to accommodate backend container boot duration on Render free-tier cold starts.
 
 ### 2.2 Security
 * Passwords must be hashed using `bcryptjs` with a minimum salt factor of 10.
@@ -55,7 +56,7 @@
 * Non-HTTPS preview thumbnails must be sanitized or mapped to fallback HTTPS placeholders to prevent mixed-content browser warnings.
 
 ### 2.4 Identity Verification
-* The platform is restricted exclusively to Institute of Data Science and Computing (IDSC) students.
+* The platform is restricted exclusively to Infotech Development Systems College (IDSC) students.
 * No institutional email addresses are available for automated email-domain verification; verification is manual.
 * OAuth is not used. Verification is performed entirely by the administrator against the IDSC student roster.
 * Expected user count: approximately 100 students. Manual verification is an acceptable and deliberate design choice at this scale.

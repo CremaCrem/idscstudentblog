@@ -4,7 +4,7 @@
 
 # Purpose
 
-This document defines the visual language of the **IDSC Student Research & Article Showcase Hub – Infotech Development Systems Colleges, Ligao City, Albay**.
+This document defines the visual language of **IDSC Pulse – Infotech Development Systems College, Ligao City, Albay**.
 
 It is the single source of truth for:
 

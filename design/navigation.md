@@ -8,7 +8,7 @@
 ├── ?tag=agriculture
 └── ?tag=information-technology
 
-/about (About the Showcase Hub)
+/about (About IDSC Pulse)
 
 /login (Student & Admin Login)
 /register (Account Creation)

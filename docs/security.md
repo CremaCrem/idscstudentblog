@@ -1,6 +1,6 @@
 # Security Architecture & Data Protection Guidelines
 
-This document details the security posture, authentication scheme, data handling standards, and defensive controls for the Student Blog Showcase Hub.
+This document details the security posture, authentication scheme, data handling standards, and defensive controls for IDSC Pulse.
 
 ---
 

@@ -330,7 +330,7 @@ export const SubmitModal: React.FC<SubmitModalProps> = ({ isOpen, onClose, onSuc
                         </>
                     ) : (
                         <div className="flex flex-col items-center max-w-md mx-auto w-full">
-                            <p className="text-sm text-zinc-500 mb-4 text-center">Live Showcase Preview — Inspect how your write-up will appear in the IDSC student directory.</p>
+                            <p className="text-sm text-zinc-500 mb-4 text-center">Live IDSC Pulse Preview — Inspect how your write-up will appear in the directory.</p>
                             <div className="w-full pointer-events-none">
                                 <BlogGridCard
                                     post={{

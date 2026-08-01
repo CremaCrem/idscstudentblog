@@ -3,7 +3,7 @@
 ## 1. Navigation & Headers
 
 ### 1.1 Top Navbar
-* **Left:** Brand Logo (Bold clean typography e.g., `IDSC Student Hub ↗`).
+* **Left:** Brand Logo (Bold clean typography e.g., `IDSC Pulse ↗`).
 * **Center Navigation Links:** `About`, `Explore Topics`, `Latest Posts`.
 * **Right Actions:** Unauthenticated (`Log In` text link + `Share Your Write-Up` pill CTA). Authenticated (`+ Share Write-Up` + Profile Avatar drop-down).
 

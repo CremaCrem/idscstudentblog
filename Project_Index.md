@@ -1,13 +1,13 @@
 # Project Index & AI Coding Instructions
 
 > **NOTICE TO AI CODING ASSISTANTS & HUMAN DEVELOPERS**  
-> Read this document in full before analyzing, modifying, or generating code for the Student Blog Showcase Hub repository.
+> Read this document in full before analyzing, modifying, or generating code for the IDSC Pulse repository.
 
 ---
 
 ## Project Overview
 
-The **Student Blog Showcase Hub** is a centralized platform designed to aggregate, showcase, and highlight articles and research published by university students. The platform stores metadata and canonical links, driving traffic back to the student creators' original web hosting platforms.
+**IDSC Pulse** is a centralized platform designed to aggregate, showcase, and highlight technical articles and research published by students of Infotech Development Systems College. The platform stores metadata and canonical links, driving traffic back to the student creators' original web hosting platforms.
 
 ---
 

@@ -1,6 +1,6 @@
 # Project Terminology & Glossary
 
-This document serves as the standard terminology reference for the **Student Blog Showcase Hub**. Maintaining consistent naming conventions and vocabulary across code, comments, documentation, and AI prompts ensures clarity and prevents architectural drift.
+This document serves as the standard terminology reference for **IDSC Pulse**. Maintaining consistent naming conventions and vocabulary across code, comments, documentation, and AI prompts ensures clarity and prevents architectural drift.
 
 ---
 
@@ -23,6 +23,7 @@ This document serves as the standard terminology reference for the **Student Blo
 
 ## Architectural Abbreviations
 
+* **IDSC:** Infotech Development Systems College
 * **SSOT:** Single Source of Truth
 * **RBAC:** Role-Based Access Control
 * **OG:** Open Graph (Meta tags used for web link previews)

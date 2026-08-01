@@ -3,8 +3,8 @@
 ## 1. Main Feed Layout (`/`)
 * **Frame Container:** Outer canvas (`#F8F6F0`) holding a central white rounded container (`24px` radius, inner shadow).
 * **Hero Header Section:**
-  * Large clean typography: `"IDSC Student Showcase"`
-  * Sub-headline: *"Discover articles, capstone write-ups, and IT research published by students of Infotech Development Systems Colleges – Ligao City, Albay."*
+  * Large clean typography: `"IDSC Pulse"`
+  * Sub-headline: *"Discover articles, capstone write-ups, and IT research published by students of Infotech Development Systems College – Ligao City, Albay."*
 * **Top Featured Section (Essos Grid style):**
   * Left: Large featured student article with glassmorphic title card.
   * Right: Compact list of 4 recent submissions ("Latest Posts").
@@ -14,12 +14,12 @@
 ---
 
 ## 2. About Page Layout (`/about`)
-* **Hero Banner:** Centered editorial header explaining the IDSC Student Showcase Hub and how it spotlights student-authored work.
-* **Key Pillars Grid (3 Cards):**
-  1. **Zero Content Hosting:** Highlights that the hub stores only links and metadata, driving direct traffic to the student's own portfolio or blog.
-  2. **Topic Tagging:** Explains how IDSC students tag their posts (*AI*, *AgriTech*, *IT*) to help peers, instructors, and visitors discover their work.
-  3. **Automated Link Verification:** Describes the admin health check engine that keeps the directory clean and free of dead student hosting links.
-* **Call To Action Box:** Warm emerald banner prompting enrolled IDSC students to share their article or research write-up URL.
+* **Hero Banner:** Centered editorial header (`"The Technical Pulse of IDSC Student Engineering"`) detailing how IDSC Pulse indexes student-authored technical work.
+* **Key Pillars Grid (3 Cards with Lucide React Icons):**
+  1. **Decentralized Student Portfolios (`Globe` icon):** Explains that IDSC Pulse acts as an index/directory, driving 100% direct web traffic back to student-owned domains.
+  2. **Discipline & Domain Indexing (`Compass` icon):** Details how BSIT students categorize technical write-ups (*AI*, *Cybersecurity*, *Cloud Development*) for peer, faculty, and industry discovery.
+  3. **Automated Directory Verification (`ShieldCheck` icon):** Outlines the periodic automated link health verification engine that maintains directory integrity without dead endpoints.
+* **Call To Action Box:** Warm neutral container prompting IDSC students to submit their portfolio or technical article link.
 
 ---
 

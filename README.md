@@ -1,4 +1,4 @@
-# IDSC Student Blog Showcase Hub 🎓✨
+# IDSC Pulse 🎓✨
 
 [![React](https://img.shields.io/badge/React-18.x-61DAFB?logo=react&logoColor=black)](https://react.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
@@ -7,9 +7,9 @@
 [![MongoDB](https://img.shields.io/badge/MongoDB_Atlas-Mongoose-47A248?logo=mongodb&logoColor=white)](https://www.mongodb.com/)
 [![Cloudinary](https://img.shields.io/badge/Cloudinary-Sharp_WebP-3448C5?logo=cloudinary&logoColor=white)](https://cloudinary.com/)
 
-A modern, high-performance web platform designed to aggregate, feature, and highlight technical write-ups, articles, and research published by university students at the **Institute of Data Science and Computing (IDSC)**. 
+A modern, high-performance web platform designed to aggregate, feature, and highlight technical write-ups, articles, and research published by university students at **Infotech Development Systems College (IDSC)**. 
 
-Rather than duplicating full-text articles locally, the hub acts as a canonical directory feed—driving real web traffic directly back to student creators' personal portfolios and hosted blogs.
+Rather than duplicating full-text articles locally, IDSC Pulse acts as a canonical directory feed—driving real web traffic directly back to student creators' personal portfolios and hosted blogs.
 
 ---
 
@@ -206,5 +206,5 @@ Distributed under the **ISC License**. See `LICENSE` for more information.
 ---
 
 <p align="center">
-  Built with ❤️ for the <strong>Institute of Data Science and Computing (IDSC)</strong> student community.
+  Built with ❤️ for the <strong>Infotech Development Systems College (IDSC)</strong> student community.
 </p>

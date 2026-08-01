@@ -1,6 +1,6 @@
 # Error Handling & Logging Strategy
 
-This document defines standard error responses, HTTP status codes, error classifications, and logging conventions across the Student Blog Showcase Hub REST API.
+This document defines standard error responses, HTTP status codes, error classifications, and logging conventions across the IDSC Pulse REST API.
 
 ---
 

@@ -248,8 +248,8 @@ When initial read requests (e.g. `GET /api/v1/blogs`) take longer than normal th
 
 2. **Phase 2: Progressive Cold-Start Phase (3+ seconds):**
    - If initial requests remain unresolved after 3,000ms, smoothly fade in (`animate-in fade-in duration-300`) an inline informative status banner directly above the loading skeleton grid.
-   - **Status Banner Microcopy:** `"Connecting to server... Waking up free-tier cloud instance (may take up to ~30–60s on first visit)."`
-   - **Visual Tokens:** `rounded-xl bg-white border border-zinc-200 p-4 shadow-sm text-sm text-zinc-600 flex items-center gap-3` with a subtle pulsing icon (`w-5 h-5 text-emerald-800`).
+   - **Status Banner Microcopy:** `"Connecting to server instance... Waking up free-tier backend (this may take up to 45s)."`
+   - **Visual Tokens:** `rounded-xl bg-zinc-900 border border-black p-4 shadow-lg text-white flex items-center gap-4` with an SVG spinner indicator (`w-5 h-5 text-zinc-400 animate-spin`).
 
 3. **Phase 3: Completion or Error Transition:**
    - **On Success:** Fade out the status banner and skeletons simultaneously, smoothly rendering live feed content.

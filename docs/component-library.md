@@ -11,19 +11,19 @@
 
 ## 2. Key UI Components
 
-### 2.1 Navigation Bar (`/src/components/Navbar.tsx`)
+### 2.1 Navigation Bar (`/src/components/layout/Navbar.tsx`)
 * Display brand name/logo.
 * Unauthenticated: Login / Register links.
 * Student Login (Approved): "+ Share Your Write-Up", "My Dashboard", "Logout".
 * Admin Login: Displays an "Admin Panel" badge alongside health check controls.
 * **Pending/Rejected States:** No authenticated session is possible. Unauthenticated navbar state is always shown.
 
-### 2.2 Tag Search Bar & Filter Strip (`/src/components/TagFilter.tsx`)
+### 2.2 Tag Search Bar & Filter Strip (`/src/components/feed/TagFilterBar.tsx`)
 * Search input for filtering feed by post title, author, or tag keyword.
 * Horizontal scrollable bar displaying popular tag pills (e.g., `[ All ]`, `[ Artificial Intelligence ]`, `[ Information Technology ]`, `[ Agriculture ]`).
 * Clicking a tag pill updates the active feed query filter.
 
-### 2.3 Blog Card (`/src/components/BlogCard.tsx`)
+### 2.3 Blog Card (`/src/components/feed/BlogGridCard.tsx`)
 * **Header:** Tag pill list + student author handle.
 * **Media Frame:** Fixed-aspect ratio image rendering user-selected or scraped `thumbnail`. Falls back gracefully to SVG placeholder if image fails to load (`onError`).
 * **Content:** Custom or scraped Title opening `originalUrl` in `target="_blank"`, short 2-line truncated description.
@@ -31,7 +31,7 @@
   * Toggle Switch for `isPublished` (toggling off to unpublish opens a `<ConfirmationModal />` before executing the status change; see `design/interaction-patterns.md` Section 4.2).
   * Red indicator banner if `isBroken === true`.
 
-### 2.4 Tag Autocomplete Submission Modal (`/src/components/SubmitModal.tsx`)
+### 2.4 Tag Autocomplete Submission Modal (`/src/components/blog/SubmitModal.tsx`)
 * **Inputs:**
   * `Blog URL` (Required).
   * `Custom Title` (Optional override).
@@ -157,9 +157,9 @@ interface FormReviewModalProps {
 An inline feedback banner rendered above layout loading skeletons when initial API requests exceed a 3-second latency threshold due to backend container cold starts.
 
 #### Visual Tokens & Styling
-* Container: `rounded-xl bg-white border border-zinc-200 p-4 shadow-sm text-sm text-zinc-600 flex items-center gap-3`
-* Icon: Lucide `Cloud` or `Server` icon (`w-5 h-5 text-emerald-800 animate-pulse`)
-* Animation: Enters via `animate-in fade-in duration-300`
+* Container: `rounded-xl bg-zinc-900 border border-black p-4 shadow-lg text-white flex items-center gap-4`
+* Icon: SVG spinner indicator (`w-5 h-5 text-zinc-400 animate-spin`)
+* Animation: Enters via `animate-in fade-in slide-in-from-top-2 duration-500`
 
 #### Behavior & Rules
 * Renders automatically after a 3,000ms delay during active initial API loads (e.g. `GET /api/v1/blogs`).

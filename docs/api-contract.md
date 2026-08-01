@@ -25,6 +25,13 @@ Base API Route: `/api/v1`
   }
   ```
 * **Behavior:** Creates the user account with `verificationStatus = "pending"`. **Does not issue a JWT token.** The student cannot log in until an admin approves the account.
+* **Error (400 Bad Request):** If mandatory fields are missing or invalid:
+  ```json
+  {
+    "success": false,
+    "error": { "code": "VALIDATION_ERROR", "message": "Full Name and Student ID are required for registration." }
+  }
+  ```
 * **Error (409 Conflict):** If `username`, `email`, or `studentId` already exists:
   ```json
   {
@@ -97,11 +104,19 @@ Base API Route: `/api/v1`
   {
     "originalUrl": "https://student-portfolio.vercel.app/ai-project",
     "title": "Building an AI Image Classifier",
-    "thumbnail": "https://student-portfolio.vercel.app/custom-cover.jpg",
+    "thumbnail": "https://res.cloudinary.com/idsc/image/upload/v1722400000/thumbnails/sample.webp",
+    "cloudinaryPublicId": "thumbnails/sample",
     "tags": ["Artificial Intelligence", "Information Technology", "Agriculture"]
   }
   ```
 * **Response (201 Created):** Returns created post document.
+* **Error (400 Bad Request):** If URL syntax is invalid or resolves to a blocked private/reserved IP (SSRF):
+  ```json
+  {
+    "success": false,
+    "error": { "code": "SSRF_BLOCKED", "message": "The requested URL resolves to a restricted internal network address." }
+  }
+  ```
 
 ### `POST /upload/thumbnail`
 * **Access:** Authenticated (Student / Admin)

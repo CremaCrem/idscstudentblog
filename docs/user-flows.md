@@ -28,7 +28,7 @@
         ├─> Normalizes tag array: ["artificial intelligence", "agriculture"]
         ├─> Checks if Title/Thumbnail provided:
         │    ├── Custom provided: Uses student provided title/image URL & cloudinaryPublicId
-        │    └── Missing: Runs Open Graph Scraper fallback (Max 4s)
+        │    └── Missing: Runs Open Graph Scraper fallback (Max 5s)
         │
         ├─> Saves record to MongoDB
         └─> Returns JSON response

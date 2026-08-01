@@ -59,7 +59,7 @@ export const RegisterPage: React.FC = () => {
       <div className="hidden md:flex flex-1 relative flex-col justify-center p-16 overflow-hidden bg-gradient-to-br from-emerald-800 to-[#022c22]">
         <div className="absolute inset-0 bg-black/10"></div>
         <div className="relative z-10 max-w-md">
-          <h2 className="font-display font-bold text-5xl text-white m-0 tracking-tight">Join the Showcase</h2>
+          <h2 className="font-display font-bold text-5xl text-white m-0 tracking-tight">Join IDSC Pulse</h2>
           <p className="text-white/80 text-lg mt-6 leading-relaxed m-0">
             Create an account to submit your personal engineering blog, increase your visibility, and connect with peers.
           </p>

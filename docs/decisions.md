@@ -81,3 +81,12 @@
      - **Extended Timeout Threshold:** Increase Axios request timeouts for initial reads (45–60s) to accommodate container boot duration.
      - **Error State Cleanup:** Genuine network/server errors (500, 502, network offline) immediately cancel progressive timers and transition directly to standard error/retry UI states.
 * **Rationale:** Eliminates ~99% of cold-start incidents via infrastructure pings while maintaining complete UI transparency and user confidence during rare container boot events.
+
+## ADR 11: Rebrand to IDSC Pulse, Institutional Acronym Alignment, and About Page Overhaul
+* **Status:** Approved (Applied: 2026-08-02)
+* **Context:** The application branding previously used generic titles ("IDSC Student Hub", "Student Showcase Hub") and an incorrect expansion of the college acronym ("Institute of Data Science and Computing"). Additionally, the About page utilized templated inline emojis and generic copy that lacked institutional weight for an academic directory.
+* **Decision:**
+  1. **Application Name:** Standardize branding across all UI components, HTML titles (`index.html`), meta descriptions, and project documentation to **IDSC Pulse**.
+  2. **Acronym Correction:** Correct the acronym expansion across all documentation to **Infotech Development Systems College (IDSC)**.
+  3. **About Page Overhaul:** Rewrite `AboutPage.tsx` copy with an institutional tone suited for BSIT student engineering portfolios. Replace raw inline emojis (`🌐`, `🏷️`, `⚡`) with Lucide React SVG icons (`Globe`, `Compass`, `ShieldCheck`), maintaining design system alignment.
+* **Rationale:** Establishes a distinct, professional identity for the platform while removing generic boilerplate artifacts and correcting institutional metadata.
