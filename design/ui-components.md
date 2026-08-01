@@ -3,9 +3,9 @@
 ## 1. Navigation & Headers
 
 ### 1.1 Top Navbar
-* **Left:** Brand Logo (Bold clean typography e.g., `student.blogs ↗`).
+* **Left:** Brand Logo (Bold clean typography e.g., `IDSC Student Hub ↗`).
 * **Center Navigation Links:** `About`, `Explore Topics`, `Latest Posts`.
-* **Right Actions:** Unauthenticated (`Log In` text link + `Submit Blog` pill CTA). Authenticated (`+ New Post` + Profile Avatar drop-down).
+* **Right Actions:** Unauthenticated (`Log In` text link + `Share Your Write-Up` pill CTA). Authenticated (`+ Share Write-Up` + Profile Avatar drop-down).
 
 ### 1.2 Category Tag Filter Bar (Inspired by *Untitled UI*)
 * Horizontal scrollable row of pill tabs.
@@ -31,7 +31,7 @@
 * **Card Text Area:**
   * Title with underline animation on hover.
   * 2-line truncated description (`-webkit-line-clamp: 2`).
-  * Action link with external arrow icon (`Read post ↗`).
+  * Action link with external arrow icon (`Read Article on Author's Site ↗`).
 
 ---
 

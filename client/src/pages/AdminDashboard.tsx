@@ -157,7 +157,7 @@ export const AdminDashboard: React.FC = () => {
     <div className="w-full max-w-[1400px] mx-auto px-6 py-12">
       <header className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4 md:gap-0">
         <div>
-          <h1 className="font-display font-bold text-3xl text-zinc-900 m-0 tracking-tight">Directory Health & Moderation</h1>
+          <h1 className="font-display font-bold text-3xl text-zinc-900 m-0 tracking-tight">IDSC Directory – Health & Moderation Panel</h1>
           <p className="text-zinc-600 mt-2 m-0">Admin panel to manage student submissions and monitor link health.</p>
         </div>
         <Button variant="primary" shape="pill" onClick={handleRunScan} disabled={isScanning}>

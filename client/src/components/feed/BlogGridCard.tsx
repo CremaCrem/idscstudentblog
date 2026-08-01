@@ -56,7 +56,7 @@ export const BlogGridCard: React.FC<BlogGridCardProps> = ({ post }) => {
                     <div className="mt-auto pt-4 flex items-center justify-between">
                         <span className="text-xs text-zinc-500 font-medium">{formattedDate}</span>
                         <div className="text-sm font-semibold text-emerald-800 flex items-center gap-1">
-                            Read <ArrowUpRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1 group-hover:-translate-y-1" />
+                            Read Article on Author's Site <ArrowUpRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1 group-hover:-translate-y-1" />
                         </div>
                     </div>
                 </div>

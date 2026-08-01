@@ -100,7 +100,7 @@ export const HeroFeaturedCard: React.FC<HeroFeaturedCardProps> = ({ featuredPost
                                         </div>
                                         <h4 className="font-semibold text-zinc-900 line-clamp-2 m-0 group-hover:underline">{post.title}</h4>
                                         <div className="text-xs font-semibold text-emerald-800 flex items-center gap-1">
-                                            Read post <ArrowUpRight className="w-3.5 h-3.5 transition-transform duration-200 group-hover:translate-x-1 group-hover:-translate-y-1" />
+                                            Read Article on Author's Site <ArrowUpRight className="w-3.5 h-3.5 transition-transform duration-200 group-hover:translate-x-1 group-hover:-translate-y-1" />
                                         </div>
                                     </div>
                                 </Card>

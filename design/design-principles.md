@@ -1,7 +1,7 @@
 # Design Principles
 
 ## 1. Core Visual Philosophy
-The design language for the **Student Blog Showcase Hub** draws inspiration from modern editorial interfaces (like *Untitled UI* and *Essos*). It blends high-contrast typography, generous whitespace, warm neutral backdrops, and subtle glassmorphic image overlays to create an elevated academic and creative directory.
+The design language for the **IDSC Student Research & Article Showcase Hub** draws inspiration from modern editorial interfaces (like *Untitled UI* and *Essos*). It blends high-contrast typography, generous whitespace, warm neutral backdrops, and subtle glassmorphic image overlays to create an elevated, student-centered directory that feels proud, professional, and authentic to the **Infotech Development Systems Colleges – Ligao City, Albay** community.
 
 ## 2. Key Design Pillars
 

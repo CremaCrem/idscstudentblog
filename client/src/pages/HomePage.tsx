@@ -66,8 +66,8 @@ export const HomePage: React.FC = () => {
     return (
         <div className="w-full max-w-7xl mx-auto px-6 py-12">
             <header className="text-center mb-12 animate-in slide-in-from-bottom-4 duration-500">
-                <h1 className="text-5xl font-bold font-display text-zinc-900 tracking-tight">Student Blog Directory</h1>
-                <p className="text-lg max-w-2xl mx-auto text-zinc-600 mt-4">Discover technical logs, capstone research, and engineering write-ups from university students.</p>
+                <h1 className="text-5xl font-bold font-display text-zinc-900 tracking-tight">IDSC Student Showcase</h1>
+                <p className="text-lg max-w-2xl mx-auto text-zinc-600 mt-4">Discover articles, capstone write-ups, and IT research published by students of Infotech Development Systems Colleges – Ligao City, Albay.</p>
             </header>
 
             <TagFilterBar

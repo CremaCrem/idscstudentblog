@@ -176,7 +176,7 @@ export const SubmitModal: React.FC<SubmitModalProps> = ({ isOpen, onClose, onSuc
             >
                 {/* Header */}
                 <div className="flex items-center justify-between p-6 border-b border-zinc-200 bg-white">
-                    <h2 id="submit-modal-title" className="text-xl font-semibold text-zinc-900">Submit Blog Post</h2>
+                    <h2 id="submit-modal-title" className="text-xl font-semibold text-zinc-900">Share Your Article or Research</h2>
                     <button
                         type="button"
                         onClick={onClose}
@@ -330,7 +330,7 @@ export const SubmitModal: React.FC<SubmitModalProps> = ({ isOpen, onClose, onSuc
                         </>
                     ) : (
                         <div className="flex flex-col items-center max-w-md mx-auto w-full">
-                            <p className="text-sm text-zinc-500 mb-4 text-center">This is how your post will appear in the showcase feed.</p>
+                            <p className="text-sm text-zinc-500 mb-4 text-center">Live Showcase Preview — Inspect how your write-up will appear in the IDSC student directory.</p>
                             <div className="w-full pointer-events-none">
                                 <BlogGridCard
                                     post={{
@@ -380,7 +380,7 @@ export const SubmitModal: React.FC<SubmitModalProps> = ({ isOpen, onClose, onSuc
                                 {isSubmitting ? 'Publishing...' : (
                                     <>
                                         <Save className="w-4 h-4 mr-2" />
-                                        Confirm & Publish
+                                        Confirm & Publish to IDSC Feed
                                     </>
                                 )}
                             </Button>

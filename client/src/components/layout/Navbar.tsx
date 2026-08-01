@@ -14,7 +14,7 @@ export const Navbar: React.FC = () => {
       <div className="flex h-16 items-center justify-between px-6 lg:px-10">
         <div className="flex items-center">
           <Link to="/" className="text-xl font-bold font-display flex items-center gap-1 hover:opacity-80 transition-opacity">
-            IDSC Student Blogs <ArrowUpRight className="w-5 h-5 text-emerald-800" />
+            IDSC Student Hub <ArrowUpRight className="w-5 h-5 text-emerald-800" />
           </Link>
         </div>
         
@@ -29,7 +29,7 @@ export const Navbar: React.FC = () => {
             <div className="flex items-center gap-3">
               <Button asChild variant="accent" shape="pill" size="sm">
                 <Link to="/dashboard" className="flex items-center gap-1">
-                  <Plus className="w-4 h-4" /> New Post
+                  <Plus className="w-4 h-4" /> Share Write-Up
                 </Link>
               </Button>
               <UserDropdown />
@@ -38,7 +38,7 @@ export const Navbar: React.FC = () => {
             <div className="flex items-center gap-3">
               <Link to="/login" className="text-sm font-medium text-zinc-600 hover:text-zinc-900 transition-colors">Log In</Link>
               <Button asChild variant="accent" shape="pill" size="sm">
-                <Link to="/login">Submit Blog</Link>
+                <Link to="/login">Share Your Write-Up</Link>
               </Button>
             </div>
           )}

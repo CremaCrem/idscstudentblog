@@ -14,8 +14,8 @@
 ### 2.1 Navigation Bar (`/src/components/Navbar.tsx`)
 * Display brand name/logo.
 * Unauthenticated: Login / Register links.
-* Student Login (Approved): "+ Submit Blog Link", "Student Dashboard", "Logout".
-* Admin Login: Displays an "Admin Dashboard" badge alongside health check controls.
+* Student Login (Approved): "+ Share Your Write-Up", "My Dashboard", "Logout".
+* Admin Login: Displays an "Admin Panel" badge alongside health check controls.
 * **Pending/Rejected States:** No authenticated session is possible. Unauthenticated navbar state is always shown.
 
 ### 2.2 Tag Search Bar & Filter Strip (`/src/components/TagFilter.tsx`)
@@ -45,8 +45,8 @@
   * **Accessibility:** Accessible dialog container carrying `role="dialog"`, `aria-modal="true"`, `aria-labelledby="submit-modal-title"`, and keyboard <kbd>Escape</kbd> key dismissal listener.
 * **Tag Input Behavior:** As the user types (e.g., "Agri"), a drop-down suggests matching existing tags (*Agriculture*, *AgriTech*). Pressing Enter or clicking a suggestion adds the tag pill to the post.
 * **Internal 2-Step Review Wizard:**
-  * **Step 1 (Input Form):** Student enters post details and optional image → Clicks "Review Submission". Uploading a file displays progress indication until Cloudinary returns the hosted CDN URL.
-  * **Step 2 (Live Card Preview):** Modal content transitions internally to render the exact `<Card />` preview of the entry → Student clicks "Edit Details" or "Confirm & Publish".
+  * **Step 1 (Input Form):** Student enters the URL of their article, research write-up, or capstone project, then optionally sets a custom title, cover image, and genre tags → Clicks "Review Submission". Uploading a file displays progress indication until Cloudinary returns the hosted CDN URL.
+  * **Step 2 (Live Card Preview):** Modal transitions internally to render the exact `<Card />` preview showing how the entry will appear in the IDSC showcase feed → Student clicks "Edit Details" or "Confirm & Publish to IDSC Feed".
   * *Note:* Stacked modals are strictly prohibited. The preview MUST occur within the existing modal shell. See `design/interaction-patterns.md` Section 6.
 
 ### 2.5 Registration Form (`/src/components/auth/RegisterForm.tsx`)
@@ -61,7 +61,7 @@
   * Clicking "Submit Registration" opens a `<FormReviewModal />` displaying a summary of Full Name, Student ID, Username, and Email (Password is masked as `••••••••`).
   * On student confirmation inside the modal, `POST /auth/register` (201) is dispatched.
   * Upon successful response, the form is replaced with a **Pending Approval** confirmation banner:
-    > *"Registration received. Your Full Name and Student ID are being reviewed by an IDSC administrator. You will be able to log in once your account is approved."*
+    > *"Registration received. Your Full Name and Student ID are being reviewed by an IDSC administrator against the official IDSC student roster. You will receive access to publish your write-ups once your account is approved."*
   * The registration page must **not** redirect to the dashboard or issue any session. The student remains unauthenticated.
 
 ### 2.6 Admin Pending Approvals Queue (`/src/pages/AdminDashboard.tsx`)

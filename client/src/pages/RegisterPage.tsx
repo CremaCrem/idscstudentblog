@@ -74,7 +74,7 @@ export const RegisterPage: React.FC = () => {
               </svg>
               <h2 className="text-2xl font-semibold text-emerald-900 mb-4 m-0">Registration Received</h2>
               <p className="text-emerald-800 leading-relaxed text-sm m-0 mb-6">
-                Your Full Name and Student ID are currently being reviewed by an IDSC administrator. You will be able to log in once your account is approved.
+                Your Full Name and Student ID are being reviewed by an IDSC administrator against the official IDSC student roster. You will receive access to publish your write-ups once your account is approved.
               </p>
               <Button variant="primary" shape="pill" onClick={() => navigate('/login')} className="w-full">
                 Return to Login
