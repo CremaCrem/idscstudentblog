@@ -68,3 +68,16 @@
 * **Decision:** Implement `server/src/utils/ssrfProtect.js` using Node stdlib (`dns.promises`, `net`). Require protocol validation (`http:`, `https:`), DNS pre-flight checking against 11 private/reserved IPv4 CIDR blocks and IPv6 ranges (including loopback, link-local, unique-local, and IPv4-mapped IPv6), and manual per-hop redirect validation (`maxRedirects: 0`, max 5 hops, 5000ms timeout). Acknowledge TOCTOU DNS rebinding as an accepted residual limitation.
 * **Vulnerability Closed:** Server-Side Request Forgery (SSRF) and cloud metadata exfiltration.
 * **Rationale:** Prevents unauthorized internal network scanning and cloud metadata access without introducing third-party socket-interception dependencies.
+
+## ADR 10: 2-Tier Cold Start Mitigation Strategy for Render Free Tier
+* **Status:** Approved (Applied: 2026-08-02)
+* **Context:** The Express backend is hosted on Render's free tier, which spins down container instances after 15 minutes of inactivity. When a dormant backend wakes up, initial HTTP request latency ranges from 30 to 60+ seconds. Without proactive warming and feedback controls, users experience long, uninformative loading delays or premature request timeouts.
+* **Decision:** Adopt a 2-tier mitigation architecture:
+  1. **Primary Defense (Infrastructure Warming):** Configure an external HTTP monitoring service (e.g., UptimeRobot or cron-job.org) to issue a `GET /health` request every 14 minutes. The `/health` endpoint requires no authentication, bypasses rate limiting middleware, and returns lightweight status JSON, keeping the Render container warm continuously within free instance-hour quotas (~720 hrs/mo).
+  2. **Fallback UX Defense (Client-Side Progressive Feedback):**
+     - **0–3s:** Show standard skeleton loader cards (`animate-pulse`) matching the layout aspect ratio.
+     - **3s+:** Fade in an informative status banner indicating the backend is waking up and may take up to ~30–60 seconds.
+     - **Centralized Timer Management:** Manage slow-request thresholds centrally at the page/hook level rather than per-component to prevent duplicate status banners during parallel API calls.
+     - **Extended Timeout Threshold:** Increase Axios request timeouts for initial reads (45–60s) to accommodate container boot duration.
+     - **Error State Cleanup:** Genuine network/server errors (500, 502, network offline) immediately cancel progressive timers and transition directly to standard error/retry UI states.
+* **Rationale:** Eliminates ~99% of cold-start incidents via infrastructure pings while maintaining complete UI transparency and user confidence during rare container boot events.

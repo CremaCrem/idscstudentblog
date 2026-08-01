@@ -151,3 +151,18 @@ interface FormReviewModalProps {
 * The Cancel button ("Edit Information") closes the review modal and returns the user to the editable form without wiping state.
 * The Confirm button ("Confirm & Submit") triggers the API request while rendering a loading spinner.
 * See `design/interaction-patterns.md` Section 6 for full specification.
+
+### 2.9 Progressive Cold-Start Status Banner (`/src/components/ui/ServerStatusBanner.tsx`)
+
+An inline feedback banner rendered above layout loading skeletons when initial API requests exceed a 3-second latency threshold due to backend container cold starts.
+
+#### Visual Tokens & Styling
+* Container: `rounded-xl bg-white border border-zinc-200 p-4 shadow-sm text-sm text-zinc-600 flex items-center gap-3`
+* Icon: Lucide `Cloud` or `Server` icon (`w-5 h-5 text-emerald-800 animate-pulse`)
+* Animation: Enters via `animate-in fade-in duration-300`
+
+#### Behavior & Rules
+* Renders automatically after a 3,000ms delay during active initial API loads (e.g. `GET /api/v1/blogs`).
+* Centralized state managed via custom hook or page controller to prevent duplicate banners during parallel queries.
+* Automatically unmounts when API requests resolve successfully or fail with explicit HTTP error status.
+* See `design/interaction-patterns.md` Section 7 for full interaction specification.

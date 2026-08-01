@@ -78,6 +78,14 @@ npm run dev
    * **Build Command:** `npm install`
    * **Start Command:** `node server.js` or `npm start`
 3. **Configure Environment Secrets:** Populate `NODE_ENV`, `MONGODB_URI`, `JWT_SECRET`, `JWT_EXPIRES_IN`, and `ALLOWED_ORIGIN`.
+4. **Primary Defense — Container Warming Setup:**
+   * Render free-tier instances enter sleep mode after 15 minutes of inactivity.
+   * Register a free HTTP monitor on an external ping service (e.g., UptimeRobot, cron-job.org).
+   * **Target Endpoint:** `https://<your-render-app>.onrender.com/health`
+   * **Ping Interval:** Every 14 minutes.
+   * *Note:* The `/health` endpoint sits above auth and rate-limiting middleware, returning `{ status: "ok" }` without hitting HTTP 429 rate limits or requiring JWT authentication headers.
+
+---
 
 ### 3. Frontend Deployment: Vercel
 
@@ -98,6 +106,7 @@ npm run dev
 - [ ] CORS `ALLOWED_ORIGIN` matches the live Vercel domain exactly.
 - [ ] API routes return proper JSON headers and structured errors.
 - [ ] SPA routing fallback configuration verified on Vercel (`vercel.json` rewrites for React Router).
+- [ ] External HTTP pinger registered hitting `GET /health` every 14 minutes to prevent Render free-tier container sleep.
 
 ---
 

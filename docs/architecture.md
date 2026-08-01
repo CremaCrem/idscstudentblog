@@ -39,3 +39,12 @@
   4. Cheerio parses Open Graph tags from safe responses.
   5. Tags are normalized (lowercase/trimmed) and stored in MongoDB.
   6. Validated record is persisted in MongoDB and returned to the React client.
+
+## 4. Container Sleep & Cold Start Mitigation Topology
+To manage Render free-tier container sleep latency (30–60+ seconds), the system implements a 2-tier mitigation topology:
+* **Primary Defense (Infrastructure):** An external monitoring pinger issues a `GET /health` request every 14 minutes to maintain warm container instances. The `/health` route sits above authentication and rate-limiting middleware. See `docs/deployment.md` Section 2.4.
+* **Fallback UX Defense (Client Layer):** In the event of a cold start, client data-fetching components manage a centralized progressive timer:
+  * 0–3s: Standard pulse skeleton loader.
+  * 3s+: Smoothly transitions to display an informative progressive status banner (`/src/components/ui/ServerStatusBanner.tsx`).
+  * Axios client timeout configured to 45–60s for initial read operations to prevent premature request cancellation.
+  * See `design/interaction-patterns.md` Section 7 for full specification.

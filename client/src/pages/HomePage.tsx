@@ -3,6 +3,8 @@ import { TagFilterBar } from '../components/feed/TagFilterBar';
 import { HeroFeaturedCard } from '../components/feed/HeroFeaturedCard';
 import { BlogGridCard } from '../components/feed/BlogGridCard';
 import { blogService, type BlogPost } from '../services/blog';
+import { useSlowRequestTimer } from '../hooks/useSlowRequestTimer';
+import { ServerStatusBanner } from '../components/ui/ServerStatusBanner';
 
 
 // Available tags based on previous wireframes/requirements
@@ -23,6 +25,8 @@ export const HomePage: React.FC = () => {
     const [gridPosts, setGridPosts] = useState<BlogPost[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+
+    const showSlowBanner = useSlowRequestTimer(isLoading, 3000);
 
     useEffect(() => {
         const fetchFeedData = async () => {
@@ -85,6 +89,7 @@ export const HomePage: React.FC = () => {
             {isLoading ? (
                 // Loading Skeleton State
                 <div className="animate-pulse">
+                    {showSlowBanner && <ServerStatusBanner />}
                     {!selectedTag && (
                         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16">
                             <div className="lg:col-span-2 h-[500px] bg-zinc-200 rounded-2xl"></div>

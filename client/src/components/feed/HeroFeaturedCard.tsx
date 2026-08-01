@@ -51,7 +51,7 @@ export const HeroFeaturedCard: React.FC<HeroFeaturedCardProps> = ({ featuredPost
                                 <span className="text-zinc-400">No Image</span>
                             </div>
                         )}
-                        <div className="absolute inset-x-0 bottom-0 p-8 flex flex-col gap-4 items-start bg-white/60 backdrop-blur-xl border-t border-white/40">
+                        <div className="absolute inset-x-0 bottom-0 p-8 flex flex-col gap-4 items-start bg-white/60 backdrop-blur-xl border-t border-white/40 rounded-b-2xl">
                             {primaryPost.tags && primaryPost.tags.length > 0 && (
                                 <Badge variant="default">[{primaryPost.tags[0]}]</Badge>
                             )}

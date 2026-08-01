@@ -231,3 +231,32 @@ All modal-based forms (e.g. `SubmitModal`) must adhere to the following standard
    - Pressing <kbd>Escape</kbd> must dismiss the modal immediately.
 4. **Drag-and-Drop Dropzone Interaction:** File dropzones must use pointer-event shielding or drag counters to prevent hover state flickering when dragging over child elements.
 5. **Upload Progress Feedback:** Image file uploads must display an inline loading indicator while the server processes WebP conversion and Cloudinary upload. Buttons must be disabled during active uploads.
+
+---
+
+## 7. Progressive Cold-Start Loading Pattern
+
+### 7.1 Purpose & Latency Behavior
+To account for Render free-tier container sleep latency (30–60+ seconds during cold starts), the application MUST handle initial data fetching delays gracefully without leaving the user with an unresponsive UI or uninformative blank screen.
+
+### 7.2 Progressive Loading Stages
+When initial read requests (e.g. `GET /api/v1/blogs`) take longer than normal threshold:
+
+1. **Phase 1: Initial Skeleton Phase (0–3 seconds):**
+   - Render standard layout skeleton loader cards (`animate-pulse`) matching the exact layout aspect ratio of `<BlogCard />`.
+   - Maintain standard visual hierarchy without intrusive banners.
+
+2. **Phase 2: Progressive Cold-Start Phase (3+ seconds):**
+   - If initial requests remain unresolved after 3,000ms, smoothly fade in (`animate-in fade-in duration-300`) an inline informative status banner directly above the loading skeleton grid.
+   - **Status Banner Microcopy:** `"Connecting to server... Waking up free-tier cloud instance (may take up to ~30–60s on first visit)."`
+   - **Visual Tokens:** `rounded-xl bg-white border border-zinc-200 p-4 shadow-sm text-sm text-zinc-600 flex items-center gap-3` with a subtle pulsing icon (`w-5 h-5 text-emerald-800`).
+
+3. **Phase 3: Completion or Error Transition:**
+   - **On Success:** Fade out the status banner and skeletons simultaneously, smoothly rendering live feed content.
+   - **On Genuine Error (HTTP 500/502, network offline):** Immediately clear the progressive cold-start timer and status banner, rendering the standard retry error container (`"Failed to connect to server. Check network connection."`). Never leave the cold-start message active when a request has failed.
+
+### 7.3 Centralized Timer Rule
+Slow-request detection timers MUST be managed centrally at the page or custom hook level (e.g., `useSlowRequestTimer`). Components executing parallel requests on mount (e.g., `getFeaturedBlogs` and `getAllBlogs` on `HomePage`) MUST share a single centralized timer state to prevent duplicate status banners from rendering.
+
+### 7.4 Request Timeout Configuration
+Axios requests for initial page loads must configure an extended timeout threshold of **45,000ms to 60,000ms** in `apiClient.ts` to accommodate the physical boot duration of Render free-tier containers without prematurely triggering client-side request cancellation errors.
