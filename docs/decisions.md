@@ -44,3 +44,27 @@
   4. The returned CDN URL is stored in `BlogPost.thumbnail` and `publicId` in `BlogPost.cloudinaryPublicId`.
   5. **Orphan Cleanup:** Replacing a thumbnail triggers `cloudinary.destroy(oldPublicId)` prior to record update. Deleting a blog post triggers a Mongoose post-delete hook calling `cloudinary.destroy(publicId)`. If upload succeeds on Cloudinary but the subsequent blog post creation fails, the resulting orphan is accepted as a known limitation for this project's scale (~100 posts, ~50 concurrent users) and will be cleaned manually via the Cloudinary Media Library.
 * **Rationale:** Eliminates Base64 database bloat, enforces authoritative server-side file validation, ensures consistent WebP compression, avoids exposing Cloudinary credentials to the client, and keeps architecture simple without adding job queues or external cache layers.
+
+## ADR 07: Fail-Fast Startup Enforcement for Environment Secrets
+* **Status:** Approved (Applied: 2026-08-01)
+* **Context:** A security audit revealed that `server/src/utils/jwt.js` contained a hardcoded fallback string for `JWT_SECRET`. If `JWT_SECRET` was unconfigured in production environment variables, the application silently degraded to signing tokens with a publicly exposed default key.
+* **Decision:** Remove all hardcoded fallback secrets. Add a mandatory startup guard in `jwt.js` that throws a fatal error and prevents server boot if `JWT_SECRET` is undefined.
+* **Vulnerability Closed:** Insecure default secret fallback / weak token signing vulnerability.
+* **Rationale:** Enforces fail-fast behavior at startup, guaranteeing the application cannot execute in a dangerous unconfigured state.
+
+## ADR 08: Server-Side Privilege Hardcoding & Role Self-Assignment Prohibition
+* **Status:** Approved (Applied: 2026-08-01)
+* **Context:** The registration validator (`authValidator.js`) permitted `role: 'admin'` in POST payloads, and `authService.js` persisted user-supplied `role` fields directly to MongoDB. A malicious client could register with `role: 'admin'` and bypass the student verification queue.
+* **Decision:** 
+  1. Remove `role` from input validation schemas during registration.
+  2. Hardcode `role: 'student'` inside `authService.registerUser()`.
+  3. Establish a permanent architecture rule: client-supplied `role` inputs are never trusted, and user roles may only be mutated via explicit, dedicated admin endpoints guarded by `authorizeRoles('admin')`.
+* **Vulnerability Closed:** Self-assigned admin privilege escalation / IDOR at registration.
+* **Rationale:** Completely eliminates self-privilege elevation vectors by enforcing server-side authority over user roles.
+
+## ADR 09: Custom Multi-Layer SSRF Defense Engine with Per-Hop Redirect Validation
+* **Status:** Approved (Applied: 2026-08-01)
+* **Context:** The Open Graph link scraper (`POST /api/v1/blogs/scrape`) accepted user-supplied URLs and fetched them without host validation, exposing internal infrastructure, cloud metadata endpoints (`169.254.169.254`), and loopback services to Server-Side Request Forgery.
+* **Decision:** Implement `server/src/utils/ssrfProtect.js` using Node stdlib (`dns.promises`, `net`). Require protocol validation (`http:`, `https:`), DNS pre-flight checking against 11 private/reserved IPv4 CIDR blocks and IPv6 ranges (including loopback, link-local, unique-local, and IPv4-mapped IPv6), and manual per-hop redirect validation (`maxRedirects: 0`, max 5 hops, 5000ms timeout). Acknowledge TOCTOU DNS rebinding as an accepted residual limitation.
+* **Vulnerability Closed:** Server-Side Request Forgery (SSRF) and cloud metadata exfiltration.
+* **Rationale:** Prevents unauthorized internal network scanning and cloud metadata access without introducing third-party socket-interception dependencies.

@@ -21,7 +21,7 @@
   ├── Auth Middleware (JWT + verificationStatus Gate)
   ├── IDSC Student Verification Layer (Pending / Approve / Reject)
   ├── Tag Autocomplete & Filter Service
-  ├── Link Scraper Module (open-graph-scraper)
+  ├── SSRF-Safe Link Scraper Engine (ssrfProtect + Cheerio)
   └── Link Health Verification Engine
        │                 │
        │ (Mongoose)      │ HTTP HEAD / GET Pings (3s Timeout)
@@ -35,6 +35,7 @@
 * **Data Flow on Submission:**
   1. Client sends `POST /api/v1/blogs` with `{ originalUrl, title?, thumbnail?, tags: [...] }`.
   2. Express validates URL syntax and sanitizes tag inputs.
-  3. If title or thumbnail is missing, Express executes `open-graph-scraper` (4000ms timeout) to fill in missing metadata.
-  4. Tags are normalized (lowercase/trimmed) and stored in MongoDB.
-  5. Validated record is persisted in MongoDB and returned to the React client.
+  3. If title or thumbnail is missing, the backend runs pre-flight SSRF validation (`ssrfProtect.js`), resolving hostnames against blocked IPv4/IPv6 private ranges and manually validating redirect hops (`maxRedirects: 0`, 5000ms timeout).
+  4. Cheerio parses Open Graph tags from safe responses.
+  5. Tags are normalized (lowercase/trimmed) and stored in MongoDB.
+  6. Validated record is persisted in MongoDB and returned to the React client.

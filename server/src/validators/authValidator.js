@@ -4,7 +4,7 @@
  * @returns {{ isValid: boolean, errors: Array<{field: string, issue: string}> }}
  */
 const validateRegisterInput = (body) => {
-  const { fullName, studentId, username, email, password, role } = body || {};
+  const { fullName, studentId, username, email, password } = body || {};
   const errors = [];
 
   // Full Name validation
@@ -56,10 +56,8 @@ const validateRegisterInput = (body) => {
     errors.push({ field: 'password', issue: 'Password must contain at least 1 letter and 1 number.' });
   }
 
-  // Role validation (optional, defaults to student)
-  if (role && !['student', 'admin'].includes(role)) {
-    errors.push({ field: 'role', issue: 'Role must be either student or admin.' });
-  }
+  // Note: 'role' is intentionally not accepted from client input.
+  // All new registrations are hardcoded to 'student' by the service layer.
 
   return {
     isValid: errors.length === 0,

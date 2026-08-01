@@ -6,7 +6,7 @@ class AuthService {
   /**
    * Registers a new user account
    */
-  async registerUser({ fullName, studentId, username, email, password, role }) {
+  async registerUser({ fullName, studentId, username, email, password }) {
     const sanitizedUsername = username.trim().toLowerCase();
     const sanitizedEmail = email.trim().toLowerCase();
     const sanitizedStudentId = studentId.trim().toUpperCase();
@@ -49,7 +49,7 @@ class AuthService {
       username: sanitizedUsername,
       email: sanitizedEmail,
       password: hashedPassword,
-      role: role || 'student',
+      role: 'student', // Always hardcoded — role is never accepted from client input
       verificationStatus: 'pending'
     });
 
