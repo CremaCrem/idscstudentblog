@@ -33,7 +33,7 @@
 ## 3. Server-Side Link Processing & Tag Strategy
 * **Scraping Separation:** To bypass browser Cross-Origin Resource Sharing (CORS) blocks, Open Graph fetching occurs exclusively on the Node.js backend.
 * **Data Flow on Submission:**
-  1. Client sends `POST /api/v1/blogs` with `{ originalUrl, title?, thumbnail?, tags: [...] }`.
+  1. Client sends `POST /api/v1/blogs` with `{ targetUrl, title?, thumbnailUrl?, cloudinaryPublicId?, tags: [...] }`.
   2. Express validates URL syntax and sanitizes tag inputs.
   3. If title or thumbnail is missing, the backend runs pre-flight SSRF validation (`ssrfProtect.js`), resolving hostnames against blocked IPv4/IPv6 private ranges and manually validating redirect hops (`maxRedirects: 0`, 5000ms timeout).
   4. Cheerio parses Open Graph tags from safe responses.

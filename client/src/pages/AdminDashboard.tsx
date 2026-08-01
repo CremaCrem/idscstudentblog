@@ -195,7 +195,8 @@ export const AdminDashboard: React.FC = () => {
       <section className="mb-12">
         {activeTab === 'blogs' && (
           <Card className="overflow-hidden">
-            <div className="overflow-x-auto">
+            {/* Desktop Table View */}
+            <div className="hidden md:block overflow-x-auto">
               <table className="w-full border-collapse text-left">
                 <thead>
                   <tr>
@@ -258,12 +259,65 @@ export const AdminDashboard: React.FC = () => {
                 </tbody>
               </table>
             </div>
+
+            {/* Mobile Card View */}
+            <div className="md:hidden flex flex-col divide-y divide-zinc-200">
+              {blogs.map(row => (
+                <div key={row._id} className="p-4 flex flex-col gap-3">
+                  <div className="flex justify-between items-start gap-2">
+                    <div className="font-medium text-zinc-900 line-clamp-2">{row.title}</div>
+                    <div>
+                      {row.lastHealthCheckStatus === 'healthy' && <Badge variant="health-healthy" dot>Healthy</Badge>}
+                      {row.lastHealthCheckStatus === 'warning' && <Badge variant="health-warning" dot>Warning</Badge>}
+                      {row.lastHealthCheckStatus === 'broken' && <Badge variant="health-broken" dot>Broken Link</Badge>}
+                      {row.lastHealthCheckStatus === 'pending' && <Badge variant="default">Pending</Badge>}
+                    </div>
+                  </div>
+                  
+                  <div className="text-sm text-zinc-600">
+                    <span className="font-medium">Student:</span> {typeof row.authorId === 'object' && row.authorId !== null && 'username' in row.authorId ? row.authorId.username : 'Unknown'}
+                  </div>
+
+                  <a href={row.targetUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-zinc-500 flex items-center gap-1 hover:underline hover:text-emerald-800 transition-colors truncate">
+                    {row.targetUrl} <ArrowUpRight className="w-3 h-3 shrink-0" />
+                  </a>
+
+                  <div className="flex flex-wrap gap-1.5 mt-1">
+                    {row.tags.map(tag => (
+                      <Badge key={tag} variant="default">{tag}</Badge>
+                    ))}
+                  </div>
+
+                  <div className="flex items-center justify-between mt-3 pt-3 border-t border-zinc-100">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-medium text-zinc-500">Published:</span>
+                      <div 
+                        onClick={() => handleTogglePublish(row._id)}
+                        className={`w-10 h-5 rounded-full relative cursor-pointer transition-colors ${row.isPublished ? 'bg-emerald-600' : 'bg-zinc-200'}`}
+                      >
+                        <div className={`w-4 h-4 bg-white rounded-full absolute top-[2px] left-[2px] transition-transform shadow-sm ${row.isPublished ? 'translate-x-5' : ''}`}></div>
+                      </div>
+                    </div>
+                    <div className="flex gap-2">
+                      <Button variant="ghost" size="sm" onClick={() => handleRecheck(row._id)}>Re-check</Button>
+                      <Button variant="ghost" size="sm" className="!text-red-600 hover:!text-red-700" onClick={() => handleDelete(row._id)}>Delete</Button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+              {blogs.length === 0 && (
+                <div className="p-8 text-center text-zinc-500">
+                  No blogs found.
+                </div>
+              )}
+            </div>
           </Card>
         )}
 
         {activeTab === 'approvals' && (
           <Card className="overflow-hidden">
-            <div className="overflow-x-auto">
+            {/* Desktop Table View */}
+            <div className="hidden md:block overflow-x-auto">
               <table className="w-full border-collapse text-left">
                 <thead>
                   <tr>
@@ -308,6 +362,35 @@ export const AdminDashboard: React.FC = () => {
                   )}
                 </tbody>
               </table>
+            </div>
+
+            {/* Mobile Card View */}
+            <div className="md:hidden flex flex-col divide-y divide-zinc-200">
+              {pendingUsers.map(user => (
+                <div key={user._id} className="p-4 flex flex-col gap-3">
+                  <div className="flex justify-between items-start">
+                    <div className="font-medium text-zinc-900">{user.fullName}</div>
+                    <div className="text-xs text-zinc-500">{new Date(user.createdAt).toLocaleDateString()}</div>
+                  </div>
+                  
+                  <div className="flex flex-col gap-1 text-sm">
+                    <div className="text-zinc-700"><span className="font-medium">ID:</span> {user.studentId}</div>
+                    <div className="text-zinc-800"><span className="font-medium">User:</span> @{user.username}</div>
+                    <div className="text-zinc-500 text-xs">{user.email}</div>
+                  </div>
+
+                  <div className="flex gap-2 mt-3 pt-3 border-t border-zinc-100 justify-end">
+                    <Button variant="primary" shape="pill" size="sm" onClick={() => handleApproveUser(user._id)}>Approve</Button>
+                    <Button variant="outline" shape="pill" size="sm" onClick={() => handleRejectUser(user._id)}>Reject</Button>
+                    <Button variant="ghost" size="sm" className="!text-red-600 hover:!text-red-700 ml-1" onClick={() => handleDeleteUser(user._id)}>Delete</Button>
+                  </div>
+                </div>
+              ))}
+              {pendingUsers.length === 0 && (
+                <div className="p-8 text-center text-zinc-500">
+                  No pending student registrations.
+                </div>
+              )}
             </div>
           </Card>
         )}

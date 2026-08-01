@@ -101,3 +101,14 @@
   4. **Public Legal Pages:** Add static public routes `/privacy` and `/terms` detailing data collection, processing purposes, third-party infrastructure (MongoDB Atlas, Render, Vercel, Cloudinary), zero tracking cookies, student content ownership, and directory moderation rights.
   5. **Legacy Scope:** Existing accounts created prior to this decision do not require forced retroactive re-acceptance.
 * **Rationale:** Establishes clear legal consent and data processing transparency without introducing over-engineered forced-scroll modals or enterprise version ledger engines. See `docs/legal-compliance.md` for full specification.
+
+## ADR 13: Mobile Responsiveness and Touch-First UX Optimization Strategy
+* **Status:** Approved
+* **Context:** The application previously relied on desktop-first layout assumptions. On small mobile viewports (< 768px), key navigation links were hidden without a mobile menu toggle, hero cards suffered text compression due to fixed heights, and admin data tables forced horizontal scrolling without a responsive card fallback.
+* **Decision:** Implement a comprehensive mobile-first responsiveness strategy using Option A (standard Tailwind CSS utility classes and modular mobile sub-views):
+  1. **Mobile Navigation Drawer:** Add a mobile menu toggle (Lucide `Menu` / `X`) in `Navbar.tsx` that opens a collapsible backdrop-blurred drawer for unauthenticated and authenticated navigation on `< md` screens.
+  2. **Responsive Feed & Cards:** Adjust `HeroFeaturedCard.tsx` from fixed `h-[500px]` height to responsive steps (`h-[360px] sm:h-[450px] lg:h-[500px]`) and reduce mobile overlay padding. Ensure `TagFilterBar.tsx` supports smooth touch-swipe horizontal scrolling.
+  3. **Responsive Administrative Table-to-Card Pattern:** In `AdminDashboard.tsx` and legal pages (`PrivacyPage.tsx`, `TermsPage.tsx`), render structured card stacks on mobile (`block md:hidden`) while reserving multi-column tables for desktop (`hidden md:table`).
+  4. **Touch-First Accessibility Standard:** Enforce a minimum **44×44px** touch tap target size for all interactive buttons, links, inputs, and close triggers.
+  5. **Modal Viewport Constraints:** Add `max-h-[90vh] overflow-y-auto` to all modal shells (`SubmitModal`, `FormReviewModal`, `ConfirmationModal`) to maintain scrollability when virtual soft keyboards open or in short landscape orientations.
+* **Rationale:** Maximizes mobile usability and touch accessibility across all smartphone and tablet viewports without introducing third-party UI framework dependencies. See `design/interaction-patterns.md` Section 8 for technical guidelines.

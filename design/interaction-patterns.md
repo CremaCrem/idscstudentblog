@@ -260,3 +260,24 @@ Slow-request detection timers MUST be managed centrally at the page or custom ho
 
 ### 7.4 Request Timeout Configuration
 Axios requests for initial page loads must configure an extended timeout threshold of **45,000ms to 60,000ms** in `apiClient.ts` to accommodate the physical boot duration of Render free-tier containers without prematurely triggering client-side request cancellation errors.
+
+---
+
+## 8. Mobile Layout & Touch Interaction Standards
+
+### 8.1 Mobile Navigation Drawer Pattern
+- On mobile viewports (`< md`), main navigation links are accessed via a responsive toggle icon (`Menu` / `X` from Lucide React).
+- Clicking the menu toggle opens a backdrop-blurred collapsible drawer container (`bg-white/95 backdrop-blur-md border-b border-zinc-200`) below `Navbar.tsx`.
+- Navigating to any route or clicking the backdrop closes the mobile drawer automatically.
+
+### 8.2 Responsive Table-to-Card Pattern
+- Data tables (`AdminDashboard.tsx`, `PrivacyPage.tsx`, `TermsPage.tsx`) must avoid forcing horizontal page scrollbars on small screens.
+- **Implementation:** Render a mobile card stack (`block md:hidden`) alongside the desktop table (`hidden md:table`). Mobile cards display key fields, status pills, and touch action buttons stacked vertically with clear spacing.
+
+### 8.3 Touch Target Size Standard
+- All interactive UI elements (buttons, navigation links, checkboxes, modal close icons, tab pills) must satisfy a minimum touch tap target of **44×44px** (e.g. `min-h-[44px]` or `p-3`).
+- On small touch screens, compact header action buttons may use shortened microcopy (e.g., `+ Share` instead of `Share Your Write-Up`) to prevent text wrapping.
+
+### 8.4 Mobile Modal & Keyboard Viewport Constraints
+- All modal shells (`SubmitModal.tsx`, `FormReviewModal.tsx`, `ConfirmationModal.tsx`) must apply `max-h-[90vh] overflow-y-auto` to accommodate soft virtual keyboard popups and landscape orientation.
+- Action footers inside modals must remain visible and accessible, with stacked full-width touch buttons on mobile (`flex-col-reverse sm:flex-row`).

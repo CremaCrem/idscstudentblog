@@ -73,27 +73,34 @@ Base API Route: `/api/v1`
 
 ### `GET /blogs`
 * **Access:** Public
-* **Query Params:** `tag`, `search`, `page`, `limit`
+* **Query Params:** `tag`, `page`, `limit`
 * **Example Route:** `/api/v1/blogs?tag=Artificial+Intelligence`
 * **Response (200 OK):**
   ```json
   {
     "success": true,
-    "count": 12,
     "data": [
       {
         "_id": "64f2...",
-        "author": { "_id": "64f1...", "username": "student_dev" },
-        "originalUrl": "https://student-portfolio.vercel.app/ai-project",
+        "authorId": { "_id": "64f1...", "username": "student_dev" },
+        "targetUrl": "https://student-portfolio.vercel.app/ai-project",
         "title": "Building an AI Image Classifier",
-        "description": "A deep dive into neural networks.",
-        "thumbnail": "https://student-portfolio.vercel.app/og.png",
+        "thumbnailUrl": "https://student-portfolio.vercel.app/og.png",
         "tags": ["artificial intelligence", "information technology"],
         "isPublished": true,
-        "isBroken": false,
+        "isScrapedFallback": false,
+        "lastHealthCheckStatus": "healthy",
+        "httpStatusCode": 200,
+        "lastCheckedAt": "2026-07-30T10:00:00.000Z",
         "createdAt": "2026-07-30T10:00:00.000Z"
       }
-    ]
+    ],
+    "pagination": {
+      "total": 1,
+      "page": 1,
+      "limit": 12,
+      "totalPages": 1
+    }
   }
   ```
 
@@ -103,9 +110,9 @@ Base API Route: `/api/v1`
 * **Payload:** 
   ```json
   {
-    "originalUrl": "https://student-portfolio.vercel.app/ai-project",
+    "targetUrl": "https://student-portfolio.vercel.app/ai-project",
     "title": "Building an AI Image Classifier",
-    "thumbnail": "https://res.cloudinary.com/idsc/image/upload/v1722400000/thumbnails/sample.webp",
+    "thumbnailUrl": "https://res.cloudinary.com/idsc/image/upload/v1722400000/thumbnails/sample.webp",
     "cloudinaryPublicId": "thumbnails/sample",
     "tags": ["Artificial Intelligence", "Information Technology", "Agriculture"]
   }
@@ -157,23 +164,28 @@ Base API Route: `/api/v1`
 
 ## 3. Administrator Endpoints
 
-### `PATCH /admin/blogs/:id/toggle-publish`
+### `PATCH /admin/blogs/:id/publish`
 * **Access:** Admin Only
-* **Payload:** `{ "isPublished": false }`
-* **Response (200 OK):** Returns updated post object.
+* **Payload:** `{}`
+* **Response (200 OK):** Returns updated post object with toggled `isPublished` status.
 
-### `POST /admin/health-check`
+### `POST /admin/health-scan`
 * **Access:** Admin Only
 * **Payload:** None
+* **Description:** Triggers an asynchronous background batch scan of all active target URLs.
 * **Response (200 OK):**
   ```json
   {
     "success": true,
-    "scanned": 45,
-    "brokenDetected": 2,
-    "flaggedPostIds": ["64f21...", "64f22..."]
+    "message": "Health scan started in the background."
   }
   ```
+
+### `POST /admin/blogs/:id/health-check`
+* **Access:** Admin Only
+* **Payload:** None
+* **Description:** Performs an immediate health check ping on a single blog post's target URL.
+* **Response (200 OK):** Returns updated blog post object with updated `lastHealthCheckStatus`, `httpStatusCode`, and `lastCheckedAt`.
 
 ---
 

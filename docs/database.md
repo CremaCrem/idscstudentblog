@@ -97,36 +97,28 @@ module.exports = mongoose.model('User', userSchema);
 const mongoose = require('mongoose');
 
 const blogPostSchema = new mongoose.Schema({
-  author: {
+  authorId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
     required: true,
     index: true
   },
-  originalUrl: {
+  targetUrl: {
     type: String,
-    required: [true, 'Blog URL is required'],
-    trim: true,
-    validate: {
-      validator: function(v) {
-        return /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/.test(v);
-      },
-      message: props => `${props.value} is not a valid URL!`
-    }
+    required: [true, 'Target URL is required'],
+    trim: true
   },
   title: {
     type: String,
-    default: 'Untitled Student Post',
-    trim: true
+    required: [true, 'Title is required'],
+    trim: true,
+    minlength: [3, 'Title must be at least 3 characters long'],
+    maxlength: [150, 'Title cannot exceed 150 characters']
   },
-  description: {
+  thumbnailUrl: {
     type: String,
-    default: 'No preview available for this blog post.',
-    trim: true
-  },
-  thumbnail: {
-    type: String,
-    default: '/assets/default-blog-thumbnail.svg'
+    trim: true,
+    default: ''
   },
   cloudinaryPublicId: {
     type: String,
@@ -135,20 +127,27 @@ const blogPostSchema = new mongoose.Schema({
   tags: [{
     type: String,
     trim: true,
-    lowercase: true,
-    index: true
+    lowercase: true
   }],
   isPublished: {
     type: Boolean,
     default: true,
     index: true
   },
-  isBroken: {
+  isScrapedFallback: {
     type: Boolean,
-    default: false,
-    index: true
+    default: false
   },
-  lastHealthCheckAt: {
+  lastHealthCheckStatus: {
+    type: String,
+    enum: ['healthy', 'broken', 'pending'],
+    default: 'pending'
+  },
+  httpStatusCode: {
+    type: Number,
+    default: null
+  },
+  lastCheckedAt: {
     type: Date,
     default: null
   }

@@ -61,3 +61,10 @@
 * No institutional email addresses are available for automated email-domain verification; verification is manual.
 * OAuth is not used. Verification is performed entirely by the administrator against the IDSC student roster.
 * Expected user count: approximately 100 students. Manual verification is an acceptable and deliberate design choice at this scale.
+
+### 2.5 Mobile Responsiveness & Touch Accessibility
+* The application UI must be fully functional and usable on viewports ranging from 320px to 768px+ (smartphones, tablets, desktops).
+* Mobile navigation links must be accessible via a collapsible menu drawer toggle on `< md` screens.
+* Interactive buttons, links, checkboxes, and close icons must maintain a minimum touch tap target of 44×44px.
+* Administrative data tables and legal policies must present responsive stacked card sub-views on mobile viewports (`block md:hidden`) to eliminate horizontal scroll overflow.
+* Modals must constrain max-height (`max-h-[90vh]`) with vertical scrolling to accommodate soft virtual keyboards and landscape mobile viewports.

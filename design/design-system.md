@@ -655,16 +655,19 @@ Mobile First
 Breakpoints
 
 ```
-sm
-
-md
-
-lg
-
-xl
-
-2xl
+sm   (640px)
+md   (768px)
+lg   (1024px)
+xl   (1280px)
+2xl  (1536px)
 ```
+
+Rules for Mobile UI:
+
+1. **Navigation:** On `< md` screens, `Navbar.tsx` must use a collapsible drawer toggle (`Menu` / `X` icon) to expose navigation links. Never hide links without a mobile fallback drawer.
+2. **Tables:** Multi-column tables (`<table />`) must switch to stacked card views (`block md:hidden`) on mobile screens to prevent horizontal overflow.
+3. **Touch Tap Targets:** All interactive elements must maintain a minimum touch target size of **44×44px**.
+4. **Fluid Layouts:** Card containers, modals, and image frames must adjust heights (`h-[360px] sm:h-[450px] lg:h-[500px]`) and padding dynamically to prevent text compression on 320px–375px screens.
 
 Never design desktop first.
 
