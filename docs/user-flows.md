@@ -62,19 +62,20 @@
    │    ├── Student ID: "2021-00123"
    │    ├── Username: "student_dev"
    │    ├── Email: "student@example.com"
-   │    └── Password: "••••••••"
-   ├-> Clicks "Review Details"
+   │    ├── Password: "••••••••"
+   │    └── Checkbox: [x] "I agree to Terms of Use (/terms) & Privacy Policy (/privacy)" (see docs/legal-compliance.md)
+   ├-> Clicks "Review Details" (disabled until checkbox is checked)
    │    │
    │    ▼
-   ├-> <FormReviewModal /> opens showing summary table (Name, Student ID, Username, Email, Masked Password)
+   ├-> <FormReviewModal /> opens showing summary table + Legal Acceptance badge: "✔ Agreed to Privacy Policy & Terms of Use (v1.0)"
    └-> Student reviews data & clicks "Confirm & Submit"
         │
         ▼
    [Express API] -> POST /api/v1/auth/register
         │
-        ├-> Validates all fields (presence, uniqueness of username / email / studentId)
+        ├-> Validates fields (presence, uniqueness, termsAccepted === true)
         ├-> Hashes password with bcrypt
-        ├-> Creates User document { verificationStatus: "pending" }
+        ├-> Creates User document { verificationStatus: "pending", termsAcceptedAt: now, termsVersion: "1.0" }
         └-> Returns 201 { message: "Pending admin approval" } — NO JWT token issued
              │
              ▼

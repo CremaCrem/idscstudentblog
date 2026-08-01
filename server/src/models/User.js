@@ -63,6 +63,18 @@ const userSchema = new mongoose.Schema(
     verifiedAt: {
       type: Date,
       default: null
+    },
+    // Legal consent audit fields — recorded once at registration time.
+    // See docs/legal-compliance.md for full specification.
+    termsAcceptedAt: {
+      type: Date,
+      required: [true, 'Terms acceptance timestamp is required'],
+      default: Date.now
+    },
+    termsVersion: {
+      type: String,
+      required: [true, 'Terms version is required'],
+      default: '1.0'
     }
   },
   {

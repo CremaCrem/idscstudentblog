@@ -96,6 +96,15 @@ export const FormReviewModal: React.FC<FormReviewModalProps> = ({
                 </div>
               ))}
             </dl>
+            <div className="mt-4 flex items-center gap-2.5 rounded-lg border border-emerald-200 bg-emerald-50 px-3.5 py-2.5">
+              <svg className="h-4 w-4 shrink-0 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+              </svg>
+              <span className="text-sm text-emerald-800">
+                Agreed to Terms of Use and Privacy Policy{' '}
+                <span className="font-semibold">(v1.0)</span>
+              </span>
+            </div>
           </div>
         </div>
         

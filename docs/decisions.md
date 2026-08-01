@@ -90,3 +90,14 @@
   2. **Acronym Correction:** Correct the acronym expansion across all documentation to **Infotech Development Systems College (IDSC)**.
   3. **About Page Overhaul:** Rewrite `AboutPage.tsx` copy with an institutional tone suited for BSIT student engineering portfolios. Replace raw inline emojis (`🌐`, `🏷️`, `⚡`) with Lucide React SVG icons (`Globe`, `Compass`, `ShieldCheck`), maintaining design system alignment.
 * **Rationale:** Establishes a distinct, professional identity for the platform while removing generic boilerplate artifacts and correcting institutional metadata.
+
+## ADR 12: Mandatory Privacy Policy and Terms of Use Acceptance Flow
+* **Status:** Approved
+* **Context:** The registration flow previously collected user details without explicit acknowledgment or consent to the platform's Privacy Policy or Terms of Use. As a directory that indexes student work and processes identity data, explicit agreement is necessary to establish clear institutional boundaries and data handling transparency.
+* **Decision:** Adopt a 2-tier enforcement strategy proportionate for a small-scale (~100 student) academic application:
+  1. **Frontend Consent UX:** Require a checkbox on the registration form ("I have read and agree to the Terms of Use and Privacy Policy") with links (`/terms` and `/privacy`) that open in a new tab or overlay modal to protect entered form state. The submission trigger is disabled until the checkbox is checked, and `<FormReviewModal />` displays a legal acceptance confirmation line (`v1.0`).
+  2. **Authoritative Backend Validation:** Require `termsAccepted: true` in `POST /api/v1/auth/register`. `authValidator.js` rejects requests with a `400 VALIDATION_ERROR` if `termsAccepted` is missing or false.
+  3. **Audit Metadata:** Record `termsAcceptedAt` (Date) and `termsVersion` (String, e.g. `'1.0'`) in the `User` schema upon registration. Exclude these non-sensitive audit fields from public responses.
+  4. **Public Legal Pages:** Add static public routes `/privacy` and `/terms` detailing data collection, processing purposes, third-party infrastructure (MongoDB Atlas, Render, Vercel, Cloudinary), zero tracking cookies, student content ownership, and directory moderation rights.
+  5. **Legacy Scope:** Existing accounts created prior to this decision do not require forced retroactive re-acceptance.
+* **Rationale:** Establishes clear legal consent and data processing transparency without introducing over-engineered forced-scroll modals or enterprise version ledger engines. See `docs/legal-compliance.md` for full specification.

@@ -16,6 +16,7 @@ export const RegisterPage: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [isPending, setIsPending] = useState(false);
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
+  const [termsAccepted, setTermsAccepted] = useState(false);
 
   const { register } = useAuth();
   const navigate = useNavigate();
@@ -37,7 +38,7 @@ export const RegisterPage: React.FC = () => {
     setLoading(true);
 
     try {
-      await register({ fullName, studentId, username, email, password });
+      await register({ fullName, studentId, username, email, password, termsAccepted: true });
       setIsPending(true);
       setIsReviewModalOpen(false);
     } catch (err: any) {
@@ -170,8 +171,43 @@ export const RegisterPage: React.FC = () => {
                   />
                   {fieldErrors.password && <div className="text-red-600 text-xs mt-1">{fieldErrors.password}</div>}
                 </div>
-                <Button variant="primary" shape="pill" className="mt-4 w-full" disabled={loading}>
-                  {loading ? 'Submitting...' : 'Register'}
+                <div className="flex items-start gap-3 mt-2">
+                  <input
+                    id="terms-checkbox"
+                    type="checkbox"
+                    checked={termsAccepted}
+                    onChange={e => setTermsAccepted(e.target.checked)}
+                    disabled={loading}
+                    className="mt-0.5 h-4 w-4 shrink-0 rounded border-zinc-300 text-emerald-700 accent-emerald-700 cursor-pointer"
+                  />
+                  <label htmlFor="terms-checkbox" className="text-sm text-zinc-600 leading-snug cursor-pointer">
+                    I have read and agree to the{' '}
+                    <a
+                      href="/terms"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-emerald-700 font-medium hover:underline"
+                    >
+                      Terms of Use
+                    </a>
+                    {' '}and{' '}
+                    <a
+                      href="/privacy"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-emerald-700 font-medium hover:underline"
+                    >
+                      Privacy Policy
+                    </a>
+                  </label>
+                </div>
+                <Button
+                  variant="primary"
+                  shape="pill"
+                  className="mt-4 w-full"
+                  disabled={loading || !termsAccepted}
+                >
+                  {loading ? 'Submitting...' : 'Review Registration'}
                 </Button>
               </form>
               <div className="mt-8 text-center text-sm text-zinc-500">

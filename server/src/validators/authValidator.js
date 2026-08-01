@@ -4,7 +4,7 @@
  * @returns {{ isValid: boolean, errors: Array<{field: string, issue: string}> }}
  */
 const validateRegisterInput = (body) => {
-  const { fullName, studentId, username, email, password } = body || {};
+  const { fullName, studentId, username, email, password, termsAccepted } = body || {};
   const errors = [];
 
   // Full Name validation
@@ -58,6 +58,12 @@ const validateRegisterInput = (body) => {
 
   // Note: 'role' is intentionally not accepted from client input.
   // All new registrations are hardcoded to 'student' by the service layer.
+
+  // Terms & Privacy Policy acceptance validation
+  // Must be boolean true — missing, false, or any other value is rejected.
+  if (termsAccepted !== true) {
+    errors.push({ field: 'termsAccepted', issue: 'You must accept the Privacy Policy and Terms of Use to register.' });
+  }
 
   return {
     isValid: errors.length === 0,

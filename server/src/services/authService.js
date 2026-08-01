@@ -42,15 +42,17 @@ class AuthService {
     // Hash password
     const hashedPassword = await hashPassword(password);
 
-    // Persist new user with pending status
+    // Persist new user with pending status and legal consent audit metadata
     const newUser = await User.create({
       fullName: fullName.trim(),
       studentId: sanitizedStudentId,
       username: sanitizedUsername,
       email: sanitizedEmail,
       password: hashedPassword,
-      role: 'student', // Always hardcoded — role is never accepted from client input
-      verificationStatus: 'pending'
+      role: 'student',         // Always hardcoded — role is never accepted from client input
+      verificationStatus: 'pending',
+      termsAcceptedAt: new Date(), // Server-generated — never accepted from client input
+      termsVersion: '1.0'          // Hardcoded current version
     });
 
     // We do NOT issue a JWT token here because the account is pending approval

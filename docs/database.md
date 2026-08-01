@@ -69,6 +69,17 @@ const userSchema = new mongoose.Schema({
   verifiedAt: {
     type: Date,
     default: null
+  },
+  // --- Legal & Terms Acceptance Fields (see docs/legal-compliance.md) ---
+  termsAcceptedAt: {
+    type: Date,
+    required: [true, 'Terms acceptance timestamp is required'],
+    default: Date.now
+  },
+  termsVersion: {
+    type: String,
+    required: true,
+    default: '1.0'
   }
 }, {
   timestamps: true

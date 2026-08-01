@@ -35,6 +35,7 @@ export interface RegisterPayload {
   email: string;
   password: string;
   role?: UserRole;
+  termsAccepted: boolean;
 }
 
 export interface LoginPayload {

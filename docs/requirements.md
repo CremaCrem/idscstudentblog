@@ -45,11 +45,12 @@
 * Health check requests must be non-blocking and execute asynchronously or with strict per-link timeouts (3.0s).
 * Client HTTP requests must configure an extended network timeout threshold of **45 to 60 seconds** in `apiClient.ts` to accommodate backend container boot duration on Render free-tier cold starts.
 
-### 2.2 Security
+### 2.2 Security & Compliance
 * Passwords must be hashed using `bcryptjs` with a minimum salt factor of 10.
 * State management must utilize signed JSON Web Tokens (JWT) with HTTP-only cookies or secure headers.
 * API endpoints performing write/delete/admin actions must enforce middleware-level role authorization checks.
 * Sanitize all user-input strings (titles, image URLs, tags) and scraped content to prevent stored XSS attacks.
+* Require authoritative backend validation (`termsAccepted: true`) and record non-sensitive audit metadata (`termsAcceptedAt`, `termsVersion`) upon account creation. See `docs/legal-compliance.md`.
 
 ### 2.3 Reliability & Fallbacks
 * If a student leaves title or thumbnail fields blank during submission, default to scraped Open Graph metadata or fallback generic assets.

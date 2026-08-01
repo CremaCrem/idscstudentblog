@@ -13,7 +13,8 @@ Base API Route: `/api/v1`
     "studentId": "2021-00123",
     "username": "student_dev",
     "email": "student@example.com",
-    "password": "securepassword123"
+    "password": "securepassword123",
+    "termsAccepted": true
   }
   ```
 * **Response (201 Created):**
@@ -24,12 +25,12 @@ Base API Route: `/api/v1`
     "data": { "status": "pending" }
   }
   ```
-* **Behavior:** Creates the user account with `verificationStatus = "pending"`. **Does not issue a JWT token.** The student cannot log in until an admin approves the account.
-* **Error (400 Bad Request):** If mandatory fields are missing or invalid:
+* **Behavior:** Creates the user account with `verificationStatus = "pending"`. Records `termsAcceptedAt` timestamp and `termsVersion` ('1.0') in MongoDB (see `docs/legal-compliance.md`). **Does not issue a JWT token.** The student cannot log in until an admin approves the account.
+* **Error (400 Bad Request):** If mandatory fields are missing, invalid, or `termsAccepted` is not boolean `true`:
   ```json
   {
     "success": false,
-    "error": { "code": "VALIDATION_ERROR", "message": "Full Name and Student ID are required for registration." }
+    "error": { "code": "VALIDATION_ERROR", "message": "You must accept the Privacy Policy and Terms of Use to register." }
   }
   ```
 * **Error (409 Conflict):** If `username`, `email`, or `studentId` already exists:

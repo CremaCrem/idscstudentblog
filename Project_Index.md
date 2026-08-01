@@ -32,6 +32,7 @@ All engineering activities, automated coding assistance, and architectural decis
   * `docs/glossary.md` — Canonical project terminology.
   * `docs/error-handling.md` — API response structures, error formats, and logging rules.
   * `docs/security.md` — Security requirements, auth schemes, and protection guidelines.
+  * `docs/legal-compliance.md` — Privacy Policy, Terms of Use, & legal consent architecture.
   * `docs/deployment.md` — Infrastructure topology, environment parameters, and build steps.
   * `docs/testing-strategy.md` — Testing requirements and verification guidelines.
 * `design/` — UI/UX layouts, wireframes, and design tokens.
@@ -60,6 +61,7 @@ Directory Structure & Folder Map
 │   ├── deployment.md           # Production & dev deployment configuration
 │   ├── error-handling.md       # API error response standards & logging rules
 │   ├── glossary.md             # Standard project terminology definitions
+│   ├── legal-compliance.md     # Privacy Policy, Terms of Use, & consent spec
 │   ├── security.md             # Security controls, auth schemes, & practices
 │   └── testing-strategy.md     # QA, unit, integration, and E2E requirements
 ├── modules/                    # Component & module architectural definitions
