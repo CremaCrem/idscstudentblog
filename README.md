@@ -204,7 +204,3 @@ Base Route: `/api/v1`
 Distributed under the **ISC License**. See `LICENSE` for more information.
 
 ---
-
-<p align="center">
-  Built with ❤️ for the <strong>Infotech Development Systems College (IDSC)</strong> student community.
-</p>
