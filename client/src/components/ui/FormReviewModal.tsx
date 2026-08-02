@@ -71,13 +71,13 @@ export const FormReviewModal: React.FC<FormReviewModalProps> = ({
       />
       <div 
         ref={modalRef}
-        className="relative w-full max-w-lg bg-white rounded-2xl shadow-xl border border-zinc-200 overflow-hidden animate-in zoom-in-95 duration-200"
+        className="relative w-full max-w-lg bg-white rounded-2xl shadow-xl border border-zinc-200 overflow-hidden flex flex-col max-h-[90vh] animate-in zoom-in-95 duration-200"
         role="dialog"
         aria-modal="true"
         aria-labelledby="modal-title"
         aria-describedby="modal-description"
       >
-        <div className="px-6 py-6">
+        <div className="px-6 py-6 overflow-y-auto flex-1">
           <h3 id="modal-title" className="text-xl font-semibold text-zinc-900 m-0 mb-2">
             {title}
           </h3>
