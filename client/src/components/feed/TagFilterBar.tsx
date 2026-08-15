@@ -10,9 +10,24 @@ interface TagFilterBarProps {
 
 export const TagFilterBar: React.FC<TagFilterBarProps> = ({ tags, selectedTag, onSelectTag }) => {
     const scrollContainerRef = useRef<HTMLDivElement>(null);
+    const popoverRef = useRef<HTMLDivElement>(null);
     const [showLeftChevron, setShowLeftChevron] = useState(false);
     const [showRightChevron, setShowRightChevron] = useState(true);
-    const [isExploreModalOpen, setIsExploreModalOpen] = useState(false); // To be implemented fully later if needed
+    const [isExploreModalOpen, setIsExploreModalOpen] = useState(false);
+
+    // Handle clicks outside of the popover to close it
+    useEffect(() => {
+        if (!isExploreModalOpen) return;
+        
+        const handleOutsideClick = (e: MouseEvent) => {
+            if (popoverRef.current && !popoverRef.current.contains(e.target as Node)) {
+                setIsExploreModalOpen(false);
+            }
+        };
+        
+        document.addEventListener('mousedown', handleOutsideClick);
+        return () => document.removeEventListener('mousedown', handleOutsideClick);
+    }, [isExploreModalOpen]);
 
     const handleScroll = () => {
         if (!scrollContainerRef.current) return;
@@ -84,25 +99,24 @@ export const TagFilterBar: React.FC<TagFilterBarProps> = ({ tags, selectedTag, o
                     <ChevronRight className="w-5 h-5" />
                 </button>
 
-                {/* Explore All Button */}
-                <button
-                    onClick={() => setIsExploreModalOpen(true)}
-                    className="shrink-0 ml-4 px-3 py-1.5 text-xs font-semibold rounded-full border border-zinc-300 text-zinc-600 hover:bg-zinc-100 transition-colors whitespace-nowrap bg-white shadow-sm"
-                >
-                    + Explore All
-                </button>
-            </div>
-            
-            {/* Future Explore All Modal Placeholder */}
-            {isExploreModalOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-zinc-900/50 backdrop-blur-sm px-4">
-                    <div className="bg-white p-6 rounded-2xl shadow-xl max-w-lg w-full max-h-[80vh] flex flex-col">
-                        <div className="flex justify-between items-center mb-4">
-                            <h3 className="text-lg font-bold text-zinc-900">Explore All Topics</h3>
-                            <button onClick={() => setIsExploreModalOpen(false)} className="text-zinc-400 hover:text-zinc-600">&times;</button>
-                        </div>
-                        <div className="overflow-y-auto flex-1 p-2">
-                            <div className="flex flex-wrap gap-2">
+                {/* Explore All Popover */}
+                <div className="relative shrink-0 ml-4" ref={popoverRef}>
+                    <button
+                        onClick={() => setIsExploreModalOpen(!isExploreModalOpen)}
+                        className={`px-3 py-1.5 text-xs font-semibold rounded-full border transition-colors whitespace-nowrap shadow-sm ${isExploreModalOpen ? 'bg-zinc-100 border-zinc-400 text-zinc-900' : 'bg-white border-zinc-300 text-zinc-600 hover:bg-zinc-100'}`}
+                    >
+                        + Explore All
+                    </button>
+
+                    {isExploreModalOpen && (
+                        <div className="absolute top-full right-0 mt-3 w-[320px] bg-white rounded-2xl shadow-2xl border border-zinc-200 z-50 p-4 animate-in fade-in slide-in-from-top-2 duration-200">
+                            <div className="flex justify-between items-center mb-4">
+                                <h3 className="text-sm font-bold text-zinc-900">Explore All Topics</h3>
+                                <button onClick={() => setIsExploreModalOpen(false)} className="text-zinc-400 hover:text-zinc-900 transition-colors">
+                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                                </button>
+                            </div>
+                            <div className="max-h-[300px] overflow-y-auto pr-1 flex flex-wrap gap-2 scrollbar-thin scrollbar-thumb-zinc-200 scrollbar-track-transparent">
                                 {tags.map((tag) => (
                                     <Badge
                                         key={tag}
@@ -117,9 +131,9 @@ export const TagFilterBar: React.FC<TagFilterBarProps> = ({ tags, selectedTag, o
                                 ))}
                             </div>
                         </div>
-                    </div>
+                    )}
                 </div>
-            )}
+            </div>
         </div>
     );
 };
