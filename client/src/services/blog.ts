@@ -48,7 +48,7 @@ export const blogService = {
     /**
      * Get published blogs (Feed) with optional pagination and filtering
      */
-    getBlogs: async (params?: { tag?: string, page?: number, limit?: number }): Promise<PaginatedResponse<BlogPost>> => {
+    getBlogs: async (params?: { tag?: string, page?: number, limit?: number, dateFrom?: string, dateTo?: string }): Promise<PaginatedResponse<BlogPost>> => {
         const response = await apiClient.get('/blogs', { params });
         return {
             data: response.data.data,
