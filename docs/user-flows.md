@@ -37,19 +37,43 @@
    [React App] -> Receives success, clears form state, closes modal, appends card to Feed
 ```
 
-## 2. Tag Filter & Search Sequence
+## 2. Tag Discovery, Date Filter & Infinite Search Sequence
 
 ```text
-[Visitor / Student] -> Types "Agriculture" in Search/Filter Bar
+[Visitor / Student] -> Navigates to Explore Page (Feed)
    │
-   ▼
-[React App] -> Calls `GET /api/v1/blogs?tag=agriculture`
+   ├─> [React App] -> Calls `GET /api/v1/tags/popular?limit=15` on mount
+   │    │
+   │    ▼
+   │   [Express API] -> Returns tags ordered by usage count
+   │    │
+   │    ▼
+   │   [React App] -> Populates <TagFilterBar /> dynamically
    │
-   ▼
-[Express API] -> Queries MongoDB using indexed `{ isPublished: true, tags: "agriculture" }`
+   ├─> Selects a dynamic tag (e.g., "Agriculture") or a Date Filter (e.g., "This Week")
+   │    │
+   │    ▼
+   │   [React App] -> Resets feed page counter to `page=1`
+   │    │
+   │    ▼
+   │   [React App] -> Calls `GET /api/v1/blogs?tag=agriculture&dateFrom=...&dateTo=...&page=1`
+   │    │
+   │    ▼
+   │   [Express API] -> Queries MongoDB and returns Page 1
+   │    │
+   │    ▼
+   │   [React App] -> Re-renders feed showing matching blogs
    │
-   ▼
-[React App] -> Re-renders feed showing only blogs tagged with "Agriculture"
+   └─> Scrolls to the bottom of the feed
+        │
+        ▼
+       [IntersectionObserver] -> Detects <InfiniteScrollSentinel /> entering viewport
+        │
+        ▼
+       [React App] -> Increments page (e.g., `page=2`) and fetches `GET /api/v1/blogs?...&page=2`
+        │
+        ▼
+       [React App] -> Appends new cards to the existing list, allowing native `loading="lazy"` to fetch images as they scroll into view
 ```
 
 ## 3. Student Registration & Admin Verification Sequence

@@ -263,9 +263,25 @@ Axios requests for initial page loads must configure an extended timeout thresho
 
 ---
 
-## 8. Mobile Layout & Touch Interaction Standards
+## 8. Infinite Scroll & Feed Discovery Interactions
 
-### 8.1 Mobile Navigation Drawer Pattern
+### 8.1 Infinite Scroll Loading State
+- The feed must utilize an invisible `<InfiniteScrollSentinel />` at the bottom of the active post grid.
+- When the user scrolls near the bottom (intersection observed), the sentinel triggers the fetch for the next API page batch.
+- **Spinner Display:** While fetching subsequent pages (`isFetchingMore`), display a centralized spinning loader ("Loading more...") just below the grid to indicate activity without interrupting the scroll flow.
+- **End of Feed State:** When `hasMore` becomes false, the sentinel and spinner are permanently removed from the DOM, optionally replaced by a subtle "You've reached the end of the feed" text indicator.
+
+### 8.2 Filter State Resets
+- When a user selects a new **Tag** or **Date Filter**, the feed must immediately:
+  1. Reset the `page` counter to `1`.
+  2. Clear the accumulated `posts` array to prevent cross-contamination of filter views.
+  3. Re-trigger the initial full-page Skeleton Loading state if latency exceeds the cold-start threshold.
+
+---
+
+## 9. Mobile Layout & Touch Interaction Standards
+
+### 9.1 Mobile Navigation Drawer Pattern
 - On mobile viewports (`< md`), main navigation links are accessed via a responsive toggle icon (`Menu` / `X` from Lucide React).
 - Clicking the menu toggle opens a backdrop-blurred collapsible drawer container (`bg-white/95 backdrop-blur-md border-b border-zinc-200`) below `Navbar.tsx`.
 - Navigating to any route or clicking the backdrop closes the mobile drawer automatically.

@@ -50,7 +50,7 @@ These documents define the project:
 - design/page-layouts.md
 - design/navigation.md
 - design/interaction-patterns.md
-- modules/*.md
+- features/*.md
 
 Never contradict these documents.
 

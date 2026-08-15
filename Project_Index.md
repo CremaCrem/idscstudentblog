@@ -35,8 +35,7 @@ All engineering activities, automated coding assistance, and architectural decis
   * `docs/legal-compliance.md` — Privacy Policy, Terms of Use, & legal consent architecture.
   * `docs/deployment.md` — Infrastructure topology, environment parameters, and build steps.
   * `docs/testing-strategy.md` — Testing requirements and verification guidelines.
-* `design/` — UI/UX layouts, wireframes, and design tokens.
-* `modules/` — System component breakdown and module boundaries.
+* `features/` — System component breakdown and module boundaries.
 * `prompts/` — Task-specific guidelines for automated agents.
 
 ---
@@ -50,7 +49,7 @@ When initializing a new development session or onboarding to a specific module, 
    └── 2. .ai/ai_constitution.md (Governance and strict constraints)
         └── 3. docs/glossary.md (Domain terminology baseline)
              └── 4. docs/security.md & docs/error-handling.md (Backend & API design patterns)
-                  └── 5. Target module docs in modules/ & design/
+                  └── 5. Target module docs in features/ & design/
 
 Directory Structure & Folder Map
 .
@@ -64,7 +63,7 @@ Directory Structure & Folder Map
 │   ├── legal-compliance.md     # Privacy Policy, Terms of Use, & consent spec
 │   ├── security.md             # Security controls, auth schemes, & practices
 │   └── testing-strategy.md     # QA, unit, integration, and E2E requirements
-├── modules/                    # Component & module architectural definitions
+├── features/                   # Component & module architectural definitions
 ├── prompts/                    # Pre-defined system prompts for development workflows
 └── PROJECT_INDEX.md            # Primary entry point for human and AI developers
 
@@ -73,7 +72,7 @@ Before reading context or writing code, every AI agent must strictly follow thes
 
 Do Not Add Unapproved Dependencies: Do NOT introduce external frameworks, databases, or libraries that are not explicitly defined in the stack (e.g., do not introduce Docker, Redis, OAuth, GraphQL, PostgreSQL, Tailwind UI components requiring extra third-party libraries, etc.).
 
-Do Not Alter System Architecture: Implement functionality strictly within existing boundaries described in modules/ and docs/.
+Do Not Alter System Architecture: Implement functionality strictly within existing boundaries described in features/ and docs/.
 
 Follow Standard Error Response Formats: Ensure all new or refactored API endpoints conform to the structured JSON format specified in docs/error-handling.md.
 

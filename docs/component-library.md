@@ -21,8 +21,14 @@
 
 ### 2.2 Tag Search Bar & Filter Strip (`/src/components/feed/TagFilterBar.tsx`)
 * Search input for filtering feed by post title, author, or tag keyword.
-* Horizontal scrollable bar displaying popular tag pills (e.g., `[ All ]`, `[ Artificial Intelligence ]`, `[ Information Technology ]`, `[ Agriculture ]`). Supports touch-swipe gestures on mobile screens.
-* Clicking a tag pill updates the active feed query filter.
+* Horizontal scrollable bar displaying popular tag pills (e.g., `[ All ]`, `[ Artificial Intelligence ]`, `[ Information Technology ]`). Supports touch-swipe gestures on mobile screens.
+* **Dynamic Sourcing:** Tag pills are fetched asynchronously from `GET /api/v1/tags/popular` on mount, ordered by usage frequency, rather than using a hardcoded array.
+* Clicking a tag pill updates the active feed query filter and resets the infinite scroll page counter.
+
+### 2.3 Date Filter Bar (`/src/components/feed/DateFilterBar.tsx`)
+* A row of preset filter buttons (e.g., "This Week", "This Month", "All Time") alongside an optional custom date range picker.
+* Sets the `dateFrom` and `dateTo` ISO string values in the parent feed component's state.
+* Changing the active date filter resets the infinite scroll page counter to `1`.
 
 ### 2.3 Blog Card (`/src/components/feed/BlogGridCard.tsx`)
 * **Header:** Tag pill list + student author handle.
@@ -170,3 +176,10 @@ An inline feedback banner rendered above layout loading skeletons when initial A
 * Centralized state managed via custom hook or page controller to prevent duplicate banners during parallel queries.
 * Automatically unmounts when API requests resolve successfully or fail with explicit HTTP error status.
 * See `design/interaction-patterns.md` Section 7 for full interaction specification.
+
+### 2.10 Infinite Scroll Sentinel (`/src/components/ui/InfiniteScrollSentinel.tsx`)
+* An invisible `div` element rendered at the very bottom of feed grids.
+* Implements the native browser `IntersectionObserver` API.
+* When the sentinel intersects with the user's viewport, it fires an `onIntersect` callback to trigger the fetching of the next paginated API batch (`page=N+1`).
+* Conditionally renders a "Loading more..." spinner state if `isFetchingMore` is true.
+* Remains completely hidden and unmounted when `hasMore` is false (end of feed reached).

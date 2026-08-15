@@ -11,15 +11,15 @@ The Dynamic Tag Management module standardizes post topic taxonomy, normalizes t
 
 ## 3. User Stories
 * **As a Student**, I want autocomplete suggestions while entering tags so that I use consistent community categories[cite: 21, 25].
-* **As a Visitor**, I want to see usage counts or distinct topic pills so that I know what topics are available[cite: 21, 25].
+* **As a Visitor**, I want to see usage counts or distinct topic pills dynamically populated from published blogs so that I know what topics are available to explore[cite: 21, 25].
 
 ## 4. React Components
 * `TagPill`: Modular pill badge supporting active, inactive, and removable interactive states[cite: 22, 25].
 * `AutocompleteCombobox`: Debounced input component with suggestion dropdown container[cite: 21, 22, 25].
 
 ## 5. Backend APIs
-* `GET /api/tags/suggestions?q=...`: Debounced query fetching tag suggestions[cite: 21].
-* `GET /api/tags/popular`: Returns top tags sorted by usage count.
+* `GET /api/v1/tags/suggestions?q=...`: Debounced query fetching tag suggestions[cite: 21].
+* `GET /api/v1/tags/popular`: Returns top tags sorted by usage count. Used dynamically by the `<TagFilterBar />`.
 
 ## 6. Database Models
 * `Tag` Entity:
@@ -31,6 +31,7 @@ The Dynamic Tag Management module standardizes post topic taxonomy, normalizes t
 ## 7. Business Rules
 * Tag normalization rules convert `" Artificial Intelligence "` -> `"artificial intelligence"`[cite: 21, 22].
 * Client inputs must debounce API autocomplete requests by 200ms to minimize network traffic[cite: 21].
+* Popular tag fetching for the `TagFilterBar` should ideally count only tags used in *published* posts to prevent users from filtering by tags that have no public content.
 
 ## 8. Validation Rules
 * `q` query string length must be at least 1 character.

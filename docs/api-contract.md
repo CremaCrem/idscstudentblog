@@ -73,8 +73,8 @@ Base API Route: `/api/v1`
 
 ### `GET /blogs`
 * **Access:** Public
-* **Query Params:** `tag`, `page`, `limit`
-* **Example Route:** `/api/v1/blogs?tag=Artificial+Intelligence`
+* **Query Params:** `tag`, `page`, `limit`, `dateFrom`, `dateTo`
+* **Example Route:** `/api/v1/blogs?tag=Artificial+Intelligence&dateFrom=2026-08-01T00:00:00.000Z`
 * **Response (200 OK):**
   ```json
   {
@@ -157,6 +157,19 @@ Base API Route: `/api/v1`
   {
     "success": true,
     "suggestions": ["Agriculture", "AgriTech"]
+  }
+  ```
+
+### `GET /tags/popular`
+* **Access:** Public
+* **Query Params:** `limit` (default: 10)
+* **Example Route:** `/api/v1/tags/popular?limit=15`
+* **Description:** Returns the most frequently used tags, sorted by usage count descending. Used to populate the dynamic TagFilterBar. Future implementation should restrict this to counting only tags from *published* blog posts.
+* **Response (200 OK):**
+  ```json
+  {
+    "success": true,
+    "data": ["Information Technology", "Artificial Intelligence", "Web Development"]
   }
   ```
 

@@ -3,9 +3,10 @@
 ## 1. User Roles & Capabilities
 
 ### 1.1 Unauthenticated Visitor
-* Browse the public feed of active, published blog posts.
+* Browse the public feed of active, published blog posts via an infinite scroll interface.
 * Search posts by title, author name, or tag keywords.
-* Filter feed dynamically by genre tags (e.g., *Artificial Intelligence*, *Information Technology*, *Agriculture*).
+* Filter feed dynamically by genre tags. The tag selection is dynamically populated from the database based on popularity (most used tags appear first).
+* Filter feed by date ranges (e.g., "This Week", "This Month", "All Time").
 * Click cards to navigate to student blogs in a new browser tab (`target="_blank"`).
 
 ### 1.2 Registered Student
@@ -44,6 +45,7 @@
 * Tag autocomplete queries must return matching suggestions within **100ms**.
 * Health check requests must be non-blocking and execute asynchronously or with strict per-link timeouts (3.0s).
 * Client HTTP requests must configure an extended network timeout threshold of **45 to 60 seconds** in `apiClient.ts` to accommodate backend container boot duration on Render free-tier cold starts.
+* To optimize bandwidth, feed images must utilize native browser `loading="lazy"` attributes, and the feed itself must implement paginated batching and an `IntersectionObserver` to trigger infinite scroll dynamically.
 
 ### 2.2 Security & Compliance
 * Passwords must be hashed using `bcryptjs` with a minimum salt factor of 10.

@@ -18,12 +18,14 @@ The Showcase Feed & Discovery module delivers the visual editorial presentation 
 * `FeedLayout`: Main page framing container with neutral canvas background styling[cite: 24, 26].
 * `HeroFeaturedCard`: Asymmetric grid displaying primary featured card and latest post vertical list[cite: 24, 25].
 * `BlogGridCard`: Standard editorial card component with frosted glass metadata overlay[cite: 22, 25, 26].
-* `TagFilterBar`: Sticky, horizontally scrollable row of pill-shaped filter buttons[cite: 23, 25].
+* `TagFilterBar`: Sticky, horizontally scrollable row of pill-shaped filter buttons populated dynamically from popular tags[cite: 23, 25].
+* `DateFilterBar`: Date range filter buttons for narrowing feed results by time period.
+* `InfiniteScrollSentinel`: Invisible intersection observer target that triggers paginated fetching.
 * `GlassmorphicOverlay`: Backdrop-blur surface overlay container[cite: 25, 26].
 
 ## 5. Backend APIs
-* `GET /api/blogs`: Queries published posts (supports `?tag=...&page=...&limit=...`)[cite: 21, 23].
-* `GET /api/blogs/featured`: Fetches top curated posts for hero display[cite: 24, 25].
+* `GET /api/v1/blogs`: Queries published posts (supports `?tag=...&page=...&limit=...&dateFrom=...&dateTo=...`)[cite: 21, 23].
+* `GET /api/v1/blogs/featured`: Fetches top curated posts for hero display[cite: 24, 25].
 
 ## 6. Database Models
 * `BlogPost` Entity (Read Model)[cite: 21].
@@ -44,10 +46,12 @@ The Showcase Feed & Discovery module delivers the visual editorial presentation 
 
 ## 10. Loading States
 * Initial page fetch displays animated skeleton cards matching grid geometry.
-* Tag switching displays a top line progress loading bar.
+* Tag or Date filter switching resets the feed and displays a top line progress loading bar or skeletons if latency is high.
+* Infinite scrolling displays an inline "Loading more..." spinner at the bottom of the feed while fetching `isFetchingMore`.
 
 ## 11. Empty States
-* When no posts match a selected tag filter, display an empty feed state graphic with a "Clear Filter" button.
+* When no posts match a selected tag or date filter, display an empty feed state graphic with a "Clear Filter" button.
+* Reaching the end of the infinite scroll list removes the sentinel and optionally shows an end-of-feed message.
 
 ## 12. Permissions
 * Public: Full read access to feed layout and filtering actions.
@@ -58,7 +62,8 @@ The Showcase Feed & Discovery module delivers the visual editorial presentation 
 
 ## 14. Performance Considerations
 * MongoDB queries utilize compound indexes (`isPublished`, `tags`) for low-latency query processing[cite: 21].
-* Dynamic dynamic images utilize responsive resolution srcsets.
+* Dynamic dynamic images utilize responsive resolution srcsets and native browser `loading="lazy"` attributes.
+* Infinite scrolling uses paginated API batching triggered efficiently by `IntersectionObserver`.
 
 ## 15. Future Expansion Points
 * Full-text search bar with highlighted search matches.

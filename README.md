@@ -24,6 +24,11 @@ Rather than duplicating full-text articles locally, IDSC Pulse acts as a canonic
 - **Server-Mediated Cloudinary Uploads:** Drag-and-drop cover image file upload with client-side 5MB validation, automatic backend **Sharp WebP** optimization, and Cloudinary CDN hosting.
 - **Personal Dashboard:** Manage personal write-ups, edit metadata, and track publication status.
 
+### 🌐 Explore Feed (Public)
+- **Dynamic Tag Discovery:** Filter the showcase dynamically using popular tags sourced directly from published active blogs.
+- **Date Range Filtering:** Narrow down posts by recent time periods (This Week, This Month, All Time).
+- **Infinite Scrolling:** Performant intersection-based infinite scrolling with batched pagination and lazy-loaded image thumbnails to minimize bandwidth.
+
 ### 🛡️ For Administrators
 - **Student Verification Queue:** Inspect submitted student IDs against official IDSC rosters with one-click Approve, Reject (with custom reasons), or Account Deletion actions.
 - **Content Moderation Dashboard:** Instant toggle switch for post visibility (`isPublished`) and destructive post management.
@@ -161,11 +166,12 @@ Base Route: `/api/v1`
 | `/auth/register` | `POST` | Public | Register new student account (`verificationStatus: "pending"`) |
 | `/auth/login` | `POST` | Public | Authenticate user & return JWT token |
 | `/auth/me` | `GET` | Authenticated | Fetch current user session details |
-| `/blogs` | `GET` | Public | Get published blog posts (supports `tag`, `search`, `page`) |
+| `/blogs` | `GET` | Public | Get published blog posts (supports `tag`, `search`, `page`, `dateFrom`, `dateTo`) |
 | `/blogs/featured` | `GET` | Public | Fetch top 3 recent published posts for Hero showcase |
 | `/blogs` | `POST` | Student/Admin | Submit a new blog post |
 | `/upload/thumbnail`| `POST` | Student/Admin | Upload image binary (`multipart/form-data`) → WebP Cloudinary URL |
 | `/tags/suggestions`| `GET` | Public | Real-time tag autocomplete suggestions |
+| `/tags/popular`| `GET` | Public | Get top most frequently used tags to populate filters |
 | `/admin/users/pending`| `GET` | Admin Only | List student accounts awaiting IDSC verification |
 | `/admin/users/:id/approve`| `PATCH` | Admin Only | Approve student registration |
 | `/admin/users/:id/reject` | `PATCH` | Admin Only | Reject student registration with optional reason |
