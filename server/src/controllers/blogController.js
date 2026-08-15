@@ -8,12 +8,22 @@ const mongoose = require('mongoose');
 // @access  Public
 exports.getAllBlogs = async (req, res, next) => {
     try {
-        const { tag, page = 1, limit = 12 } = req.query;
+        const { tag, page = 1, limit = 12, dateFrom, dateTo } = req.query;
         
         const query = { isPublished: true };
         
         if (tag) {
             query.tags = tag.toLowerCase().trim();
+        }
+
+        if (dateFrom || dateTo) {
+            query.createdAt = {};
+            if (dateFrom) {
+                query.createdAt.$gte = new Date(dateFrom);
+            }
+            if (dateTo) {
+                query.createdAt.$lte = new Date(dateTo);
+            }
         }
 
         const pageNum = Math.max(1, parseInt(page, 10));

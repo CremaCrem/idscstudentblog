@@ -27,17 +27,34 @@ class TagService {
   }
 
   /**
-   * Fetches the most frequently used tags.
+   * Fetches the most frequently used tags from active, published posts.
    * @param {number} limit 
    * @returns {Promise<Array>}
    */
   async getPopularTags(limit = 10) {
-    const tags = await Tag.find({ usageCount: { $gt: 0 } })
-      .sort({ usageCount: -1 })
-      .limit(limit)
-      .select('name normalizedName usageCount -_id');
+    const mongoose = require('mongoose');
+    
+    // 1. Aggregate top normalized tags from published posts only
+    const popularAggregation = await mongoose.model('BlogPost').aggregate([
+      { $match: { isPublished: true } },
+      { $unwind: "$tags" },
+      { $group: { _id: "$tags", count: { $sum: 1 } } },
+      { $sort: { count: -1 } },
+      { $limit: limit }
+    ]);
 
-    return tags.map(t => t.name);
+    if (popularAggregation.length === 0) return [];
+
+    const topNormalized = popularAggregation.map(ag => ag._id);
+    
+    // 2. Fetch the corresponding Tag entities to get properly cased 'name'
+    const tags = await Tag.find({ normalizedName: { $in: topNormalized } });
+    
+    // 3. Map the names back in the sorted order of popularAggregation
+    const nameMap = new Map();
+    tags.forEach(t => nameMap.set(t.normalizedName, t.name));
+
+    return topNormalized.map(norm => nameMap.get(norm) || norm);
   }
 
   /**
