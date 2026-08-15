@@ -33,6 +33,7 @@ export const BlogGridCard: React.FC<BlogGridCardProps> = ({ post }) => {
                             src={post.thumbnailUrl}
                             alt={post.title}
                             className="w-full h-full object-cover"
+                            loading="lazy"
                             onError={(e) => {
                                 (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=800&q=80';
                             }}
