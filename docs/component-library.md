@@ -35,10 +35,10 @@
 * Sets the `dateFrom` and `dateTo` ISO string values in the parent feed component's state.
 * Changing the active date filter resets the infinite scroll page counter to `1`.
 
-### 2.3 Blog Card (`/src/components/feed/BlogGridCard.tsx`)
+### 2.4 Blog Card (`/src/components/feed/BlogGridCard.tsx`)
 * **Header:** Tag pill list + student author handle.
-* **Media Frame:** Fixed-aspect ratio image rendering user-selected or scraped `thumbnailUrl`. Falls back gracefully to SVG placeholder if image fails to load (`onError`).
-* **Content:** Custom or scraped Title opening `targetUrl` in `target="_blank"`.
+* **Media Frame (Strict Grid Aspect Ratio):** To prevent grid layout conflicts and uneven whitespace caused by varying image uploads (e.g., tall mobile screenshots vs. wide landscape photos), the image container MUST strictly enforce a uniform aspect ratio (e.g., `aspect-video`). The `<img>` element must apply `object-fit: cover` (`object-cover`) to flawlessly crop and fill the frame without distortion. Falls back gracefully to an SVG placeholder if the image fails to load (`onError`).
+* **Content:** Custom or scraped Title opening `targetUrl` in `target="_blank"`. The content area must use a flex layout to consistently push the date and external link indicator to the bottom of the card, ensuring a uniform visual baseline across the grid row.
 * **Admin Overlay (Conditional):**
   * Toggle Switch for `isPublished` (toggling off to unpublish opens a `<ConfirmationModal />` before executing the status change; see `design/interaction-patterns.md` Section 4.2).
   * Red indicator banner if `lastHealthCheckStatus === 'broken'`.

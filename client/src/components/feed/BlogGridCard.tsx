@@ -27,7 +27,7 @@ export const BlogGridCard: React.FC<BlogGridCardProps> = ({ post }) => {
             className="block no-underline group h-full"
         >
             <Card hoverEffect className="cursor-pointer flex flex-col h-full border-zinc-200">
-                <div className="relative aspect-video">
+                <div className="relative w-full aspect-video overflow-hidden shrink-0 bg-zinc-100">
                     {post.thumbnailUrl ? (
                         <img
                             src={post.thumbnailUrl}
