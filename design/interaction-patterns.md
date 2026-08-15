@@ -296,9 +296,10 @@ The following pattern must be applied:
 3. **"+ Explore All" Trailing Button (Scalability Escape Hatch):**
    - Appended as the final, non-scrolling item anchored to the right of the tag row.
    - Renders as a distinct outlined pill (e.g., `border border-zinc-300 text-zinc-600 hover:bg-zinc-100`).
-   - Clicking triggers a lightweight overlay (popover or modal) that displays a **searchable, alphabetical grid** of all active student tags from the database.
-   - This allows users to discover low-frequency tags without requiring endless horizontal scrolling through the filter bar.
-   - **Anti-Stacking Rule:** If implemented as a modal, it must follow the standard outlined in Section 6.3. It must not stack over any other open modal shell.
+   - Clicking triggers an **anchored contextual popover dropdown** (`absolute top-full right-0 mt-3`) displaying a scrollable grid of all active student tags from the database.
+   - **Click-Outside Dismissal Pattern:** The popover listens for global `mousedown` events on the document. If a click originates outside the popover element (`popoverRef.current`), the popover automatically closes.
+   - Selecting any tag pill within the popover updates the active filter and closes the popover immediately.
+   - This allows users to discover low-frequency tags without requiring endless horizontal scrolling through the filter bar or disrupting page interaction flow.
 
 
 
