@@ -277,6 +277,31 @@ Axios requests for initial page loads must configure an extended timeout thresho
   2. Clear the accumulated `posts` array to prevent cross-contamination of filter views.
   3. Re-trigger the initial full-page Skeleton Loading state if latency exceeds the cold-start threshold.
 
+### 8.3 Tag Filter Bar Overflow & Affordance Pattern
+When the number of dynamically sourced tags causes the `TagFilterBar` to overflow its container, the interface must guide users without relying on a native horizontal scrollbar, which is visually inconsistent across operating systems and platforms.
+
+The following pattern must be applied:
+
+1. **Right-Edge Gradient Fade (Visual Affordance):**
+   - A gradient overlay (`from-transparent to-stone-50/90`) is absolutely positioned at the right boundary of the tag container.
+   - The partially visible tag fading into this gradient creates an immediate, self-evident visual cue that more content exists beyond the edge.
+   - This affordance is always visible on both desktop and mobile when overflow exists.
+
+2. **Chevron Navigation Buttons (Desktop Only, `>= md`):**
+   - `ChevronLeft` and `ChevronRight` icon buttons (Lucide React) are rendered as floating controls flanking the scrollable tag strip.
+   - Clicking either chevron smoothly scrolls the container by `250px` via `scrollBy({ left: ±250, behavior: 'smooth' })`.
+   - **Conditional Visibility:** The left chevron is hidden (`opacity-0` or `display: none`) when `scrollLeft === 0`. The right chevron is hidden when `scrollLeft + clientWidth >= scrollWidth`. Visibility updates on every `scroll` event.
+   - Chevrons are hidden entirely (`hidden md:flex`) on mobile; touch-swipe is the sole navigation method.
+
+3. **"+ Explore All" Trailing Button (Scalability Escape Hatch):**
+   - Appended as the final, non-scrolling item anchored to the right of the tag row.
+   - Renders as a distinct outlined pill (e.g., `border border-zinc-300 text-zinc-600 hover:bg-zinc-100`).
+   - Clicking triggers a lightweight overlay (popover or modal) that displays a **searchable, alphabetical grid** of all active student tags from the database.
+   - This allows users to discover low-frequency tags without requiring endless horizontal scrolling through the filter bar.
+   - **Anti-Stacking Rule:** If implemented as a modal, it must follow the standard outlined in Section 6.3. It must not stack over any other open modal shell.
+
+
+
 ---
 
 ## 9. Mobile Layout & Touch Interaction Standards

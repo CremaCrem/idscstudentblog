@@ -19,11 +19,16 @@
 * **Pending/Rejected States:** No authenticated session is possible. Unauthenticated navbar state is always shown.
 * **Mobile Responsive Sub-View:** On `< md` viewports, main navigation links are accessed via a responsive toggle button (`Menu` / `X` icon from Lucide React) that controls a backdrop-blurred collapsible mobile menu drawer below the header.
 
-### 2.2 Tag Search Bar & Filter Strip (`/src/components/feed/TagFilterBar.tsx`)
-* Search input for filtering feed by post title, author, or tag keyword.
-* Horizontal scrollable bar displaying popular tag pills (e.g., `[ All ]`, `[ Artificial Intelligence ]`, `[ Information Technology ]`). Supports touch-swipe gestures on mobile screens.
-* **Dynamic Sourcing:** Tag pills are fetched asynchronously from `GET /api/v1/tags/popular` on mount, ordered by usage frequency, rather than using a hardcoded array.
+### 2.2 Tag Filter Bar (`/src/components/feed/TagFilterBar.tsx`)
+* Horizontally scrollable bar displaying popular tag pills (e.g., `[ All ]`, `[ Cybersecurity ]`, `[ Animation ]`). Supports native touch-swipe on mobile viewports.
+* **Dynamic Sourcing:** Tag pills are fetched asynchronously from `GET /api/v1/tags/popular` on mount, ordered by active usage frequency, rather than using a hardcoded array.
 * Clicking a tag pill updates the active feed query filter and resets the infinite scroll page counter.
+* **Overflow Navigation Design (Desktop):** When the available tags exceed the container width, the following affordance pattern must be applied:
+  1. **Right-Edge Gradient Fade:** A `bg-gradient-to-r from-transparent to-stone-50/90` overlay mask is positioned absolutely on the right end of the container. This creates a visual "fade-out" effect that communicates to the user that additional content exists beyond the visible area, without relying on a native scrollbar.
+  2. **Left & Right Chevron Buttons:** Floating `ChevronLeft` / `ChevronRight` icon buttons (from Lucide React) flank the scrollable container. Clicking scrolls the container by a fixed `250px` interval via JavaScript `scrollBy`. The left chevron is hidden when the scroll position is at the beginning; the right chevron is hidden when the last tag is fully in view.
+  3. **"+ Explore All" Trailing Pill:** A distinct, outlined pill button (e.g., `border border-zinc-300 text-zinc-600`) is appended as the final item in the tag row. Clicking it opens a lightweight popover or modal displaying a searchable, alphabetical grid of **all** active student tags sourced from the database. This prevents horizontal-scroll fatigue when the platform scales beyond 15–20 unique tags.
+* **Mobile Behavior:** Chevron buttons are hidden on `< md` viewports. Overflow is handled purely via native touch-swipe. The edge-fade gradient remains visible. The "Explore All" pill remains accessible.
+
 
 ### 2.3 Date Filter Bar (`/src/components/feed/DateFilterBar.tsx`)
 * A row of preset filter buttons (e.g., "This Week", "This Month", "All Time") alongside an optional custom date range picker.
