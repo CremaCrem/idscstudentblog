@@ -47,7 +47,7 @@ export const UrlInputField: React.FC<UrlInputFieldProps> = ({
     const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
         const val = e.target.value;
         if (validateUrl(val) && val && onPasteScrapeTrigger) {
-             onPasteScrapeTrigger(val);
+            onPasteScrapeTrigger(val);
         }
     };
 

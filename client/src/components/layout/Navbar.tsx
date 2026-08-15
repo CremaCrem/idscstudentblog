@@ -70,7 +70,7 @@ export const Navbar: React.FC = () => {
                     <Plus className="w-4 h-4 mr-2" /> Share Write-Up
                   </Link>
                 </Button>
-                <div className="flex justify-center" onClick={() => setIsMobileMenuOpen(false)}>
+                <div className="flex justify-center">
                   <UserDropdown />
                 </div>
               </>
