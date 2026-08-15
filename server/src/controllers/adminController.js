@@ -75,7 +75,10 @@ const togglePublishStatus = async (req, res) => {
         blog.isPublished = !blog.isPublished;
         await blog.save();
 
-        res.json({ success: true, data: blog });
+        // Populate authorId before sending response so the frontend UI doesn't fallback to "Unknown"
+        const populatedBlog = await BlogPost.findById(blog._id).populate('authorId', 'username');
+
+        res.json({ success: true, data: populatedBlog });
     } catch (error) {
         console.error('Error toggling publish status:', error);
         res.status(500).json({ success: false, error: { message: 'Failed to toggle status' } });
@@ -116,7 +119,10 @@ const checkSingleLinkHealth = async (req, res) => {
 
         const updatedBlog = await healthCheckService.scanSingleLink(blog);
 
-        res.json({ success: true, data: updatedBlog });
+        // Populate authorId before sending response so the frontend UI doesn't fallback to "Unknown"
+        const populatedBlog = await BlogPost.findById(updatedBlog._id).populate('authorId', 'username');
+
+        res.json({ success: true, data: populatedBlog });
     } catch (error) {
         console.error('Error checking single link:', error);
         res.status(500).json({ success: false, error: { message: 'Failed to check link' } });
