@@ -18,6 +18,34 @@ export interface AdminPaginatedBlogs {
     };
 }
 
+export interface StudentUser {
+    _id: string;
+    fullName: string;
+    studentId: string;
+    username: string;
+    email: string;
+    role: string;
+    verificationStatus: string;
+    createdAt: string;
+    verifiedAt?: string;
+    blogCount?: number;
+}
+
+export interface AdminPaginatedUsers {
+    data: StudentUser[];
+    pagination: {
+        total: number;
+        page: number;
+        limit: number;
+        totalPages: number;
+    };
+}
+
+export interface StudentProfileData {
+    user: StudentUser;
+    blogs: BlogPost[];
+}
+
 export const adminService = {
     getMetrics: async (): Promise<AdminMetrics> => {
         const response = await apiClient.get('/admin/metrics');
@@ -67,5 +95,18 @@ export const adminService = {
 
     deleteUser: async (id: string): Promise<void> => {
         await apiClient.delete(`/admin/users/${id}`);
+    },
+
+    getUsers: async (params?: { page?: number, limit?: number, search?: string, status?: string }): Promise<AdminPaginatedUsers> => {
+        const response = await apiClient.get('/admin/users', { params });
+        return {
+            data: response.data.data,
+            pagination: response.data.pagination
+        };
+    },
+
+    getUserProfile: async (id: string): Promise<StudentProfileData> => {
+        const response = await apiClient.get(`/admin/users/${id}`);
+        return response.data.data;
     }
 };

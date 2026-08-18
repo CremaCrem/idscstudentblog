@@ -242,6 +242,100 @@ const deleteUser = async (req, res) => {
     }
 };
 
+/**
+ * Get all users with their blog post counts
+ */
+const getUsers = async (req, res) => {
+    try {
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 20;
+        const skip = (page - 1) * limit;
+
+        // Base match to optionally filter by status or search
+        const match = { role: 'student' };
+        if (req.query.status) {
+            match.verificationStatus = req.query.status;
+        }
+        if (req.query.search) {
+            match.$or = [
+                { fullName: { $regex: req.query.search, $options: 'i' } },
+                { username: { $regex: req.query.search, $options: 'i' } },
+                { studentId: { $regex: req.query.search, $options: 'i' } }
+            ];
+        }
+
+        const aggregationPipeline = [
+            { $match: match },
+            { $sort: { createdAt: -1 } },
+            { $skip: skip },
+            { $limit: limit },
+            {
+                $lookup: {
+                    from: 'blogposts',
+                    localField: '_id',
+                    foreignField: 'authorId',
+                    as: 'blogs'
+                }
+            },
+            {
+                $addFields: {
+                    blogCount: { $size: '$blogs' }
+                }
+            },
+            {
+                $project: {
+                    password: 0,
+                    blogs: 0 // We don't need the actual blogs here, just the count
+                }
+            }
+        ];
+
+        const users = await User.aggregate(aggregationPipeline);
+        const total = await User.countDocuments(match);
+
+        res.json({
+            success: true,
+            data: users,
+            pagination: {
+                total,
+                page,
+                limit,
+                totalPages: Math.ceil(total / limit)
+            }
+        });
+    } catch (error) {
+        console.error('Error fetching users:', error);
+        res.status(500).json({ success: false, error: { message: 'Failed to fetch users' } });
+    }
+};
+
+/**
+ * Get a single user's profile and their blogs
+ */
+const getUserProfile = async (req, res) => {
+    try {
+        const { id } = req.params;
+        
+        const user = await User.findById(id).select('-password');
+        if (!user) {
+            return res.status(404).json({ success: false, error: { message: 'User not found' } });
+        }
+
+        const blogs = await BlogPost.find({ authorId: id }).sort({ createdAt: -1 });
+
+        res.json({
+            success: true,
+            data: {
+                user,
+                blogs
+            }
+        });
+    } catch (error) {
+        console.error('Error fetching user profile:', error);
+        res.status(500).json({ success: false, error: { message: 'Failed to fetch user profile' } });
+    }
+};
+
 module.exports = {
     getMetrics,
     getAllBlogs,
@@ -252,5 +346,7 @@ module.exports = {
     getPendingUsers,
     approveUser,
     rejectUser,
-    deleteUser
+    deleteUser,
+    getUsers,
+    getUserProfile
 };

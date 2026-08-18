@@ -4,14 +4,19 @@ import { Button } from '../components/ui/Button';
 import { Badge } from '../components/ui/Badge';
 import { ConfirmationModal } from '../components/ui/ConfirmationModal';
 import { ArrowUpRight, Loader2 } from 'lucide-react';
-import { adminService, type AdminMetrics } from '../services/adminService';
+import { adminService, type AdminMetrics, type StudentUser } from '../services/adminService';
 import type { BlogPost } from '../services/blog';
+import { StudentProfileModal } from '../components/admin/StudentProfileModal';
 
 export const AdminDashboard: React.FC = () => {
   const [metrics, setMetrics] = useState<AdminMetrics | null>(null);
   const [blogs, setBlogs] = useState<BlogPost[]>([]);
   const [pendingUsers, setPendingUsers] = useState<any[]>([]);
-  const [activeTab, setActiveTab] = useState<'blogs' | 'approvals'>('blogs');
+  const [students, setStudents] = useState<StudentUser[]>([]);
+  const [studentPage, setStudentPage] = useState(1);
+  const [studentPagination, setStudentPagination] = useState({ total: 0, page: 1, limit: 20, totalPages: 1 });
+  const [activeTab, setActiveTab] = useState<'blogs' | 'approvals' | 'students'>('blogs');
+  const [selectedStudentId, setSelectedStudentId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isScanning, setIsScanning] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -23,14 +28,17 @@ export const AdminDashboard: React.FC = () => {
   const fetchData = async () => {
     try {
       setIsLoading(true);
-      const [metricsData, blogsData, pendingData] = await Promise.all([
+      const [metricsData, blogsData, pendingData, studentsData] = await Promise.all([
         adminService.getMetrics(),
         adminService.getBlogs({ limit: 50 }),
-        adminService.getPendingUsers()
+        adminService.getPendingUsers(),
+        adminService.getUsers()
       ]);
       setMetrics(metricsData);
       setBlogs(blogsData.data);
       setPendingUsers(pendingData);
+      setStudents(studentsData.data);
+      setStudentPagination(studentsData.pagination);
     } catch (err) {
       console.error('Failed to load admin data', err);
       setError('Failed to load dashboard data. Ensure you have admin privileges.');
@@ -38,6 +46,26 @@ export const AdminDashboard: React.FC = () => {
       setIsLoading(false);
     }
   };
+
+  const fetchStudents = async (page: number) => {
+    try {
+      const res = await adminService.getUsers({ page });
+      setStudents(res.data);
+      setStudentPagination(res.pagination);
+    } catch (err) {
+      console.error('Failed to load students', err);
+    }
+  };
+
+  const isFirstRender = React.useRef(true);
+
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+    fetchStudents(studentPage);
+  }, [studentPage]);
 
   useEffect(() => {
     fetchData();
@@ -116,6 +144,7 @@ export const AdminDashboard: React.FC = () => {
       } else if (type === 'deleteUser' && id) {
         await adminService.deleteUser(id);
         setPendingUsers(pendingUsers.filter(u => u._id !== id));
+        setStudents(students.filter(u => u._id !== id));
       }
     } catch (err) {
       console.error(`Failed to execute ${type}`, err);
@@ -171,6 +200,12 @@ export const AdminDashboard: React.FC = () => {
           onClick={() => setActiveTab('blogs')}
         >
           Blog Submissions
+        </button>
+        <button 
+          className={`px-4 py-3 font-medium text-sm border-b-2 transition-colors ${activeTab === 'students' ? 'border-emerald-600 text-emerald-700' : 'border-transparent text-zinc-500 hover:text-zinc-800 hover:border-zinc-300'}`}
+          onClick={() => setActiveTab('students')}
+        >
+          Student Directory
         </button>
         <button 
           className={`flex items-center gap-2 px-4 py-3 font-medium text-sm border-b-2 transition-colors ${activeTab === 'approvals' ? 'border-emerald-600 text-emerald-700' : 'border-transparent text-zinc-500 hover:text-zinc-800 hover:border-zinc-300'}`}
@@ -394,7 +429,119 @@ export const AdminDashboard: React.FC = () => {
             </div>
           </Card>
         )}
+
+        {activeTab === 'students' && (
+          <Card className="overflow-hidden">
+            {/* Desktop Table View */}
+            <div className="hidden md:block overflow-x-auto">
+              <table className="w-full border-collapse text-left">
+                <thead>
+                  <tr>
+                    <th className="px-6 py-4 text-xs font-semibold uppercase text-zinc-500 border-b border-zinc-200 bg-stone-50 whitespace-nowrap">Full Name</th>
+                    <th className="px-6 py-4 text-xs font-semibold uppercase text-zinc-500 border-b border-zinc-200 bg-stone-50 whitespace-nowrap">Student ID</th>
+                    <th className="px-6 py-4 text-xs font-semibold uppercase text-zinc-500 border-b border-zinc-200 bg-stone-50 whitespace-nowrap">Contact</th>
+                    <th className="px-6 py-4 text-xs font-semibold uppercase text-zinc-500 border-b border-zinc-200 bg-stone-50 whitespace-nowrap">Posts</th>
+                    <th className="px-6 py-4 text-xs font-semibold uppercase text-zinc-500 border-b border-zinc-200 bg-stone-50 whitespace-nowrap">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {students.map(user => (
+                    <tr key={user._id} className="last:border-b-0">
+                      <td className="px-6 py-5 border-b border-zinc-200 align-top font-medium whitespace-nowrap text-zinc-900">
+                        {user.fullName}
+                      </td>
+                      <td className="px-6 py-5 border-b border-zinc-200 align-top font-mono text-sm text-zinc-700 whitespace-nowrap">
+                        {user.studentId}
+                      </td>
+                      <td className="px-6 py-5 border-b border-zinc-200 align-top">
+                        <div className="font-medium text-zinc-800">@{user.username}</div>
+                        <div className="text-sm text-zinc-500 mt-1">{user.email}</div>
+                      </td>
+                      <td className="px-6 py-5 border-b border-zinc-200 align-top">
+                        <Badge variant="default">{user.blogCount || 0}</Badge>
+                      </td>
+                      <td className="px-6 py-5 border-b border-zinc-200 align-top">
+                        <div className="flex gap-2">
+                          <Button variant="primary" shape="pill" size="sm" onClick={() => setSelectedStudentId(user._id)}>View Profile</Button>
+                          <Button variant="ghost" size="sm" className="!text-red-600 hover:!text-red-700 ml-2" onClick={() => handleDeleteUser(user._id)}>Delete</Button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                  {students.length === 0 && (
+                    <tr>
+                      <td colSpan={5} className="px-6 py-12 text-center text-zinc-500">
+                        No registered students found.
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Mobile Card View */}
+            <div className="md:hidden flex flex-col divide-y divide-zinc-200">
+              {students.map(user => (
+                <div key={user._id} className="p-4 flex flex-col gap-3">
+                  <div className="flex justify-between items-start">
+                    <div className="font-medium text-zinc-900">{user.fullName}</div>
+                    <Badge variant="default">{user.blogCount || 0} Posts</Badge>
+                  </div>
+                  
+                  <div className="flex flex-col gap-1 text-sm">
+                    <div className="text-zinc-700"><span className="font-medium">ID:</span> {user.studentId}</div>
+                    <div className="text-zinc-800"><span className="font-medium">User:</span> @{user.username}</div>
+                    <div className="text-zinc-500 text-xs">{user.email}</div>
+                  </div>
+
+                  <div className="flex gap-2 mt-3 pt-3 border-t border-zinc-100 justify-end">
+                    <Button variant="primary" shape="pill" size="sm" onClick={() => setSelectedStudentId(user._id)}>View Profile</Button>
+                    <Button variant="ghost" size="sm" className="!text-red-600 hover:!text-red-700 ml-1" onClick={() => handleDeleteUser(user._id)}>Delete</Button>
+                  </div>
+                </div>
+              ))}
+              {students.length === 0 && (
+                <div className="p-8 text-center text-zinc-500">
+                  No registered students found.
+                </div>
+              )}
+            </div>
+
+            {/* Pagination Controls */}
+            {studentPagination.totalPages > 1 && (
+              <div className="flex items-center justify-between px-6 py-4 border-t border-zinc-200 bg-stone-50">
+                <div className="text-sm text-zinc-500">
+                  Showing <span className="font-medium text-zinc-900">{(studentPagination.page - 1) * studentPagination.limit + 1}</span> to <span className="font-medium text-zinc-900">{Math.min(studentPagination.page * studentPagination.limit, studentPagination.total)}</span> of <span className="font-medium text-zinc-900">{studentPagination.total}</span> students
+                </div>
+                <div className="flex gap-2">
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    onClick={() => setStudentPage(p => Math.max(1, p - 1))}
+                    disabled={studentPagination.page === 1}
+                  >
+                    Previous
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    onClick={() => setStudentPage(p => Math.min(studentPagination.totalPages, p + 1))}
+                    disabled={studentPagination.page === studentPagination.totalPages}
+                  >
+                    Next
+                  </Button>
+                </div>
+              </div>
+            )}
+          </Card>
+        )}
       </section>
+
+      <StudentProfileModal
+        userId={selectedStudentId}
+        isOpen={!!selectedStudentId}
+        onClose={() => setSelectedStudentId(null)}
+      />
 
       <ConfirmationModal
         isOpen={!!confirmAction}

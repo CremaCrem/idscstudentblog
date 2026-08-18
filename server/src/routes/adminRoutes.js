@@ -20,7 +20,9 @@ router.post('/health-scan', adminController.triggerHealthScan);
 router.post('/blogs/:id/health-check', adminController.checkSingleLinkHealth);
 
 // User Verification Management
+router.get('/users', adminController.getUsers);
 router.get('/users/pending', adminController.getPendingUsers);
+router.get('/users/:id', adminController.getUserProfile);
 router.patch('/users/:id/approve', adminController.approveUser);
 router.patch('/users/:id/reject', adminController.rejectUser);
 router.delete('/users/:id', adminController.deleteUser);
