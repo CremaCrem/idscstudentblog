@@ -239,5 +239,76 @@ Base API Route: `/api/v1`
 
 ### `DELETE /admin/users/:id`
 * **Access:** Admin Only
-* **Description:** Permanently deletes a user account. Intended for rejected or erroneous registrations to allow the student to re-register with corrected details.
+* **Description:** Permanently deletes a user account. Intended for rejected or erroneous registrations, or account removals, to allow the student to re-register with corrected details.
 * **Response (200 OK):** `{ "success": true, "message": "User account deleted." }`
+
+---
+
+## 5. Student Directory & Profile Inspection Endpoints (Admin Only)
+
+### `GET /admin/users`
+* **Access:** Admin Only
+* **Query Params:** `search`, `status` (e.g., `approved`, `pending`, `rejected`), `page`, `limit`
+* **Description:** Retrieves all registered student accounts with their profile metadata and aggregated blog counts.
+* **Response (200 OK):**
+  ```json
+  {
+    "success": true,
+    "data": [
+      {
+        "_id": "64f1...",
+        "fullName": "Juan dela Cruz",
+        "studentId": "2021-00123",
+        "username": "student_dev",
+        "email": "student@example.com",
+        "role": "student",
+        "verificationStatus": "approved",
+        "createdAt": "2026-07-30T10:00:00.000Z",
+        "verifiedAt": "2026-07-31T08:30:00.000Z",
+        "blogCount": 3
+      }
+    ],
+    "pagination": {
+      "total": 1,
+      "page": 1,
+      "limit": 20,
+      "totalPages": 1
+    }
+  }
+  ```
+
+### `GET /admin/users/:id`
+* **Access:** Admin Only
+* **Description:** Fetches comprehensive student profile details along with all blog submissions posted by the specific student.
+* **Response (200 OK):**
+  ```json
+  {
+    "success": true,
+    "data": {
+      "user": {
+        "_id": "64f1...",
+        "fullName": "Juan dela Cruz",
+        "studentId": "2021-00123",
+        "username": "student_dev",
+        "email": "student@example.com",
+        "role": "student",
+        "verificationStatus": "approved",
+        "createdAt": "2026-07-30T10:00:00.000Z",
+        "verifiedAt": "2026-07-31T08:30:00.000Z"
+      },
+      "blogs": [
+        {
+          "_id": "64f2...",
+          "title": "Building an AI Image Classifier",
+          "targetUrl": "https://student-portfolio.vercel.app/ai-project",
+          "thumbnailUrl": "https://res.cloudinary.com/idsc/image/upload/v1722400000/thumbnails/sample.webp",
+          "tags": ["artificial intelligence", "information technology"],
+          "isPublished": true,
+          "lastHealthCheckStatus": "healthy",
+          "httpStatusCode": 200,
+          "createdAt": "2026-07-30T10:00:00.000Z"
+        }
+      ]
+    }
+  }
+  ```

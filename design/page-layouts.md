@@ -40,6 +40,24 @@
   2. `Total Registered Students`
   3. `Verified Healthy Links (Green)`
   4. `Flagged / Dead Links (Red)`
-* **Data Management Table:**
-  * Columns: `Student`, `Blog Title & URL`, `Genre Tags`, `Health Status`, `Published Status`, `Actions`.
-  * Inline Actions: One-click toggle switch for `isPublished`, `Re-check Link` ping button, and `Delete` trash button.
+* **Navigation Tabs:**
+  1. **Blog Submissions (`activeTab === 'blogs'`):**
+     * Columns: `Student`, `Blog Title & URL`, `Genre Tags`, `Health Status`, `Published Status`, `Actions`.
+     * Inline Actions: One-click toggle switch for `isPublished`, `Re-check Link` ping button, and `Delete` trash button.
+  2. **Pending Approvals (`activeTab === 'approvals'`):**
+     * Badge counter showing unreviewed registrations count.
+     * Columns: `Full Name`, `Student ID`, `Account Details (@username & email)`, `Registered At`, `Actions`.
+     * Actions: `Approve`, `Reject`, and `Delete` buttons triggering confirmation dialogs.
+  3. **Student Directory (`activeTab === 'students'`):**
+     * Search & filter bar: Instant search by student name, student ID, or `@username`.
+     * Columns: `Full Name`, `Student ID`, `Account Details (@username & email)`, `Registered Date`, `Blogs Posted (Count)`, `Actions`.
+     * Inline Actions: `View Profile & Blogs` (pill button) and `Delete Account` (destructive button).
+* **Student Profile & Submissions Modal (`<StudentProfileModal />`):**
+  * **Header / Hero Card:**
+    * Student Full Name, Student ID badge, `@username`, User ID (`_id`), and Email address.
+    * Account metadata badges: Account creation timestamp (`createdAt`), verification date (`verifiedAt`), and total submission count.
+  * **Submissions Breakdown List:**
+    * Scrollable list of all blog posts submitted by this individual student.
+    * Card/Row details: Blog Title, external target URL link, tags, live health check status badge (`● Healthy`, `● Broken`, `● Warning`), and publication toggle switch (`isPublished`).
+    * Inline actions: Ping recheck and delete post.
+  * **Empty State:** Clean placeholder illustration when student has not submitted any blog articles yet.

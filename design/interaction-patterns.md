@@ -46,9 +46,10 @@ A `<ConfirmationModal />` must be shown **before** executing any of the followin
 | **Approve student registration** | Admin Dashboard → Pending Approvals tab | Confirm (no input) |
 | **Reject student registration** | Admin Dashboard → Pending Approvals tab | Confirm + optional text input (rejection reason) |
 | **Delete a pending user account** | Admin Dashboard → Pending Approvals tab | Confirm (destructive) |
-| **Delete a blog post (admin)** | Admin Dashboard → Blog Submissions tab | Confirm (destructive) |
+| **Delete a student account** | Admin Dashboard → Student Directory tab | Confirm (destructive) |
+| **Delete a blog post (admin)** | Admin Dashboard → Blog Submissions tab / Student Profile Modal | Confirm (destructive) |
 | **Delete a blog post (student)** | Student Dashboard | Confirm (destructive) |
-| **Unpublish a blog post** | Admin Dashboard → Blog Submissions tab | Confirm |
+| **Unpublish a blog post** | Admin Dashboard → Blog Submissions tab / Student Profile Modal | Confirm |
 
 Any future action that is **irreversible** or **significantly alters state** must also use a confirmation modal. This includes but is not limited to: bulk operations, account deactivation, and data exports.
 

@@ -135,3 +135,37 @@
    ├── verificationStatus == "rejected" -> 403 ACCOUNT_REJECTED
    └── verificationStatus == "approved" -> 200 OK + JWT token issued
 ```
+
+## 4. Admin Student Directory & Profile Inspection Sequence
+
+```text
+[Admin] -> Navigates to /admin -> Clicks "Student Directory" Tab
+   │
+   ├─> [React App] -> Calls `GET /api/v1/admin/users`
+   │    │
+   │    ▼
+   │   [Express API] -> Returns array of all registered students with aggregate blog counts
+   │    │
+   │    ▼
+   │   [React App] -> Renders <StudentDirectoryTable /> with student rows:
+   │                  [Full Name, Student ID, Username, Email, Created Date, Post Count, Actions]
+   │
+   ├─> Admin searches/filters or clicks "View Profile" on a specific student
+   │    │
+   │    ▼
+   │   [React App] -> Calls `GET /api/v1/admin/users/:id`
+   │    │
+   │    ▼
+   │   [Express API] -> Queries User record + all associated BlogPost records by authorId
+   │                    Returns { user: { _id, fullName, studentId, username, email, createdAt, verifiedAt }, blogs: [...] }
+   │    │
+   │    ▼
+   │   [React App] -> Opens <StudentProfileModal /> displaying:
+   │                  ├── Student Profile Card: Full Name, Student ID, User ID (_id), Email, @username, Account Created Date, Verification Timestamp
+   │                  └── Posted Blogs Breakdown:
+   │                       ├── Lists all submissions (Healthy, Broken, Warning, Pending)
+   │                       ├── Blog Title, Target URL, Tags, Created Date
+   │                       └── Quick-action toggles (Publish/Unpublish switch, Delete post)
+   │
+   └─> Admin closes modal or navigates back to Directory table
+```

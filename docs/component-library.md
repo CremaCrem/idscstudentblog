@@ -78,18 +78,34 @@
   * The registration page must **not** redirect to the dashboard or issue any session. The student remains unauthenticated.
 
 ### 2.6 Admin Dashboard (`/src/pages/AdminDashboard.tsx`)
-* A dedicated **"Pending Approvals"** tab and **"Blog Submissions"** tab within the Admin Dashboard.
+* Dedicated navigation tabs within the Admin Dashboard:
+  * **"Blog Submissions"** tab: Overview of all directory posts with live health status, publish toggles, and recheck triggers.
+  * **"Pending Approvals"** tab: Registration queue for approving or rejecting new student accounts.
+  * **"Student Directory"** tab: Directory of all registered student profiles (Full Name, Student ID, Username, Email, Registration Date, Blog Count).
 * **Desktop & Mobile Sub-Views:**
-  * **Desktop (`hidden md:table`):** Displays a multi-column table of pending registrations and blog submissions.
-  * **Mobile (`block md:hidden`):** Displays responsive stacked card views for pending registrations and blog entries to prevent horizontal page scrolling.
+  * **Desktop (`hidden md:table`):** Displays multi-column tables for blog submissions, pending registrations, and student directories.
+  * **Mobile (`block md:hidden`):** Displays responsive stacked card views for all three sections to prevent horizontal page scrolling.
 * Each entry includes action buttons:
-  * **Approve** — Opens a `<ConfirmationModal />` (non-destructive variant) asking the admin to confirm the approval, then triggers `PATCH /api/v1/admin/users/:id/approve`.
-  * **Reject** — Opens a `<ConfirmationModal />` with an optional **Rejection Reason** textarea, then triggers `PATCH /api/v1/admin/users/:id/reject`.
-  * **Delete** — Opens a `<ConfirmationModal />` (destructive variant) warning that the action is permanent, then triggers `DELETE /api/v1/admin/users/:id` or `DELETE /api/v1/admin/blogs/:id`.
-* A red badge counter on the tab shows the number of pending registrations awaiting review.
+  * **View Profile & Blogs (Student Directory):** Opens the `<StudentProfileModal />` displaying detailed personal information and all submitted articles.
+  * **Approve (Approvals):** Opens a `<ConfirmationModal />` (non-destructive variant) asking the admin to confirm the approval, then triggers `PATCH /api/v1/admin/users/:id/approve`.
+  * **Reject (Approvals):** Opens a `<ConfirmationModal />` with an optional **Rejection Reason** textarea, then triggers `PATCH /api/v1/admin/users/:id/reject`.
+  * **Delete (All tabs):** Opens a `<ConfirmationModal />` (destructive variant) warning that the action is permanent, then triggers `DELETE /api/v1/admin/users/:id` or `DELETE /api/v1/admin/blogs/:id`.
+* A red badge counter on the "Pending Approvals" tab shows the number of registrations awaiting review.
 * `window.confirm()`, `window.prompt()`, and `window.alert()` are **prohibited** for all actions. See `design/interaction-patterns.md` Section 4.
 
-### 2.7 Confirmation Modal (`/src/components/ui/ConfirmationModal.tsx`)
+### 2.7 Student Profile & Submissions Modal (`/src/components/admin/StudentProfileModal.tsx`)
+* Dedicated modal opened from the Student Directory tab on the Admin Dashboard.
+* **Header / Profile Summary Card:**
+  * Displays student identity information: Full Name, Student ID number, Username (`@handle`), Email address, MongoDB User ID (`_id`).
+  * Displays account status and timeline metrics: Account Creation Timestamp (`createdAt`), Approval Timestamp (`verifiedAt`), and Total Posts Count.
+* **Posted Blogs Section:**
+  * Interactive scrollable list/grid of all blog posts submitted by the student.
+  * Displays article title, canonical target URL link, tags, live health check status badge (`● Healthy`, `● Broken`, `● Warning`), and creation timestamp.
+  * Includes inline moderation controls: `isPublished` toggle switch and post deletion button.
+* **Empty State:** Clean fallback state indicating that the student has not yet posted any blog links.
+* **Accessibility:** Full keyboard trap, <kbd>Esc</kbd> dismissal listener, and `aria-modal="true"`.
+
+### 2.8 Confirmation Modal (`/src/components/ui/ConfirmationModal.tsx`)
 
 A reusable, project-wide modal component for confirming or reversing actions before they are executed.
 

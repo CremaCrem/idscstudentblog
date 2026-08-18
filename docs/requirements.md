@@ -36,7 +36,13 @@
   * **Approve** an account: Sets `verificationStatus = "approved"` and records `verifiedAt` and `verifiedBy`.
   * **Reject** an account: Sets `verificationStatus = "rejected"` and optionally records a reason.
   * **Delete** a rejected or erroneous registration to release the `studentId` and `email` for re-registration.
-* **User Management:** Ability to revoke user posting access or delete accounts if necessary.
+* **Student Directory & Profile Inspection:**
+  * View a dedicated student directory containing all registered student accounts.
+  * Inspect individual student profile details:
+    * **Personal Information:** Full Name, Student ID number, Username, Email address, and MongoDB User ID (`_id`).
+    * **Account Timeline:** Account registration/creation timestamp (`createdAt`) and verification approval date (`verifiedAt`).
+    * **Submitted Blogs Breakdown:** Complete list of all blog links posted by the student (regardless of publication status), displaying article titles, target URLs, assigned tags, live health check status, and publication status (`isPublished`).
+* **User Management:** Ability to revoke user posting access, edit verification statuses, or permanently delete student accounts if necessary.
 
 ## 2. Non-Functional Requirements
 
