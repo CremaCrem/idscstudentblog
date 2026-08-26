@@ -5,6 +5,7 @@ export interface PublicProfile {
     username: string;
     createdAt: string;
     role: string;
+    bio?: string;
 }
 
 export interface ProfileResponse {

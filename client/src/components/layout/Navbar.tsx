@@ -3,12 +3,19 @@ import { Link } from 'react-router';
 import { Button } from '../ui/Button';
 import { useAuth } from '../../contexts/AuthContext';
 import { UserDropdown } from './UserDropdown';
-import { ArrowUpRight, Plus, Menu, X } from 'lucide-react';
+import { ArrowUpRight, Plus, Menu, X, Share2, Check } from 'lucide-react';
 
 export const Navbar: React.FC = () => {
   const { user } = useAuth();
   const isAuthenticated = !!user;
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isCopied, setIsCopied] = useState(false);
+
+  const handleCopyLink = () => {
+    navigator.clipboard.writeText(window.location.href);
+    setIsCopied(true);
+    setTimeout(() => setIsCopied(false), 2000);
+  };
 
   return (
     <header className="sticky top-0 z-40 w-full border-b border-zinc-200 bg-white/80 backdrop-blur-md">
@@ -26,6 +33,14 @@ export const Navbar: React.FC = () => {
         </nav>
 
         <div className="hidden md:flex items-center gap-4">
+          <button
+            onClick={handleCopyLink}
+            className="flex items-center gap-2 text-sm font-medium text-zinc-600 hover:text-zinc-900 transition-colors px-3 py-2 rounded-md hover:bg-zinc-100"
+            title="Copy page link"
+          >
+            {isCopied ? <Check className="w-4 h-4 text-emerald-600" /> : <Share2 className="w-4 h-4" />}
+            {isCopied ? <span className="text-emerald-600">Copied!</span> : <span>Share</span>}
+          </button>
           {isAuthenticated ? (
             <div className="flex items-center gap-3">
               <Button asChild variant="accent" shape="pill" size="sm">
@@ -63,6 +78,13 @@ export const Navbar: React.FC = () => {
           </nav>
           
           <div className="pt-6 border-t border-zinc-100 flex flex-col gap-4">
+            <button
+              onClick={handleCopyLink}
+              className="flex items-center justify-center gap-2 font-medium py-2 text-zinc-800 bg-zinc-100 rounded-full"
+            >
+              {isCopied ? <Check className="w-4 h-4 text-emerald-600" /> : <Share2 className="w-4 h-4" />}
+              {isCopied ? 'Link Copied!' : 'Share This Page'}
+            </button>
             {isAuthenticated ? (
               <>
                 <Button asChild variant="accent" shape="pill" className="w-full justify-center">

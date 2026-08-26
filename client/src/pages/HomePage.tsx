@@ -8,8 +8,15 @@ import { blogService, type BlogPost } from '../services/blog';
 import { tagApi } from '../services/tagApi';
 import { useSlowRequestTimer } from '../hooks/useSlowRequestTimer';
 import { ServerStatusBanner } from '../components/ui/ServerStatusBanner';
+import { useSEO } from '../hooks/useSEO';
 
 export const HomePage: React.FC = () => {
+    useSEO({
+        title: 'IDSC Pulse — Student Research & Engineering Directory',
+        description: 'Discover technical write-ups, capstone research, and engineering logs from students at Infotech Development Systems College, Albay.',
+        url: 'https://idscpulse.com/'
+    });
+
     const [selectedTag, setSelectedTag] = useState<string | null>(null);
     const [availableTags, setAvailableTags] = useState<string[]>([]);
     const [dateRange, setDateRange] = useState<DateRangeType>('All Time');

@@ -4,6 +4,7 @@ import { userService, type PublicProfile } from '../services/userService';
 import type { BlogPost } from '../services/blog';
 import { BlogGridCard } from '../components/feed/BlogGridCard';
 import { Loader2, Calendar } from 'lucide-react';
+import { useSEO } from '../hooks/useSEO';
 
 export const ProfilePage: React.FC = () => {
   const { username } = useParams<{ username: string }>();
@@ -11,6 +12,14 @@ export const ProfilePage: React.FC = () => {
   const [blogs, setBlogs] = useState<BlogPost[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  useSEO({
+    title: username ? `${username} - Research & Articles | IDSC Pulse` : 'Profile | IDSC Pulse',
+    description: profile?.bio || (username
+      ? `View technical logs and capstone research by ${username} on IDSC Pulse.`
+      : 'View student technical logs and capstone research on IDSC Pulse.'),
+    url: `https://idscpulse.com/profile/${username || ''}`
+  });
 
   useEffect(() => {
     const fetchProfile = async () => {

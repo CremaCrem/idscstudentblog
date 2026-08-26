@@ -3,8 +3,15 @@ import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { Link } from 'react-router';
 import { Globe, Compass, ShieldCheck } from 'lucide-react';
+import { useSEO } from '../hooks/useSEO';
 
 export const AboutPage: React.FC = () => {
+  useSEO({
+    title: 'About | IDSC Pulse — Albay',
+    description: 'Learn about IDSC Pulse, a central index of student-authored technical work designed to showcase the engineering depth of IDSC students in Albay.',
+    url: 'https://idscpulse.com/about'
+  });
+
   return (
     <div className="w-full max-w-5xl mx-auto px-6 py-16">
       <header className="text-center mb-20 animate-in slide-in-from-bottom-4 duration-500">
