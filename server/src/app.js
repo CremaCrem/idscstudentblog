@@ -12,6 +12,10 @@ const userRoutes = require('./routes/userRoutes');
 
 const app = express();
 
+// Render (and most PaaS) sit behind one reverse proxy; without this, req.ip is the proxy's IP
+// and every user shares a single rate-limit bucket.
+app.set('trust proxy', 1);
+
 // CORS Configuration (Must be before any other middleware or routes)
 const allowedOrigins = [process.env.ALLOWED_ORIGIN || 'http://localhost:5173', 'http://127.0.0.1:5173', 'http://localhost:5174'];
 app.use(
@@ -50,6 +54,7 @@ app.use(cookieParser());
 const authRateLimiter = rateLimit({
     windowMs: 15 * 60 * 1000,
     max: 10,
+    skipSuccessfulRequests: true, // only failed attempts count (brute-force protection), not /me checks or valid logins
     message: {
         success: false,
         error: {
