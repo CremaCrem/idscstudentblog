@@ -9,7 +9,7 @@ export const AppLayout: React.FC = () => {
       <div className="w-full max-w-7xl">
         <div className="w-full min-h-[90vh] flex flex-col bg-white rounded-3xl shadow-xl border border-zinc-200 overflow-hidden">
           <Navbar />
-          <main className="flex-1">
+          <main className="flex-1 flex flex-col">
             <Outlet />
           </main>
           <Footer />
