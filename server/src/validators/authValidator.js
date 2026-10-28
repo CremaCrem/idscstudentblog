@@ -1,4 +1,22 @@
 /**
+ * Password rule: Minimum 8 characters containing at least 1 number and 1 letter
+ * @param {*} password
+ * @returns {string|null} Issue message, or null if valid
+ */
+const getPasswordIssue = (password) => {
+  if (!password || typeof password !== 'string') {
+    return 'Password is required.';
+  }
+  if (password.length < 8) {
+    return 'Password must be at least 8 characters long.';
+  }
+  if (!/\d/.test(password) || !/[a-zA-Z]/.test(password)) {
+    return 'Password must contain at least 1 letter and 1 number.';
+  }
+  return null;
+};
+
+/**
  * Validates registration payload
  * @param {object} body 
  * @returns {{ isValid: boolean, errors: Array<{field: string, issue: string}> }}
@@ -47,13 +65,9 @@ const validateRegisterInput = (body) => {
     }
   }
 
-  // Password validation: Minimum 8 characters containing at least 1 number and 1 letter
-  if (!password || typeof password !== 'string') {
-    errors.push({ field: 'password', issue: 'Password is required.' });
-  } else if (password.length < 8) {
-    errors.push({ field: 'password', issue: 'Password must be at least 8 characters long.' });
-  } else if (!/\d/.test(password) || !/[a-zA-Z]/.test(password)) {
-    errors.push({ field: 'password', issue: 'Password must contain at least 1 letter and 1 number.' });
+  const passwordIssue = getPasswordIssue(password);
+  if (passwordIssue) {
+    errors.push({ field: 'password', issue: passwordIssue });
   }
 
   // Note: 'role' is intentionally not accepted from client input.
@@ -95,7 +109,32 @@ const validateLoginInput = (body) => {
   };
 };
 
+/**
+ * Validates password reset payload
+ * @param {object} body
+ * @returns {{ isValid: boolean, errors: Array<{field: string, issue: string}> }}
+ */
+const validateResetPasswordInput = (body) => {
+  const { token, password } = body || {};
+  const errors = [];
+
+  if (!token || typeof token !== 'string' || !/^[a-f0-9]{64}$/.test(token)) {
+    errors.push({ field: 'token', issue: 'Reset token is missing or malformed.' });
+  }
+
+  const passwordIssue = getPasswordIssue(password);
+  if (passwordIssue) {
+    errors.push({ field: 'password', issue: passwordIssue });
+  }
+
+  return {
+    isValid: errors.length === 0,
+    errors
+  };
+};
+
 module.exports = {
   validateRegisterInput,
-  validateLoginInput
+  validateLoginInput,
+  validateResetPasswordInput
 };

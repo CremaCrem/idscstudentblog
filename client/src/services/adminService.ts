@@ -105,6 +105,11 @@ export const adminService = {
         };
     },
 
+    generateResetLink: async (id: string): Promise<{ token: string; expiresAt: string }> => {
+        const response = await apiClient.post(`/admin/users/${id}/reset-link`);
+        return response.data.data;
+    },
+
     getUserProfile: async (id: string): Promise<StudentProfileData> => {
         const response = await apiClient.get(`/admin/users/${id}`);
         return response.data.data;

@@ -25,6 +25,8 @@ The Authentication & Identity module handles user access control, credentials ve
 * `POST /api/auth/login`: Authenticates credentials and returns JWT token[cite: 21].
 * `POST /api/auth/logout`: Clears authentication cookie/session token[cite: 21].
 * `GET /api/auth/me`: Fetches active authenticated user profile details[cite: 21].
+* `POST /api/v1/auth/reset-password`: Consumes a one-time reset token (`{ token, password }`) and sets a new password. Rate-limited with the other auth routes.
+* `POST /api/v1/admin/users/:id/reset-link` (admin only): Issues a one-time reset token valid for 30 minutes; returns `{ token, expiresAt }`.
 
 ## 6. Database Models
 * `User` Entity:
@@ -40,6 +42,17 @@ The Authentication & Identity module handles user access control, credentials ve
 * User roles are strictly enforced; elevated endpoints require `role === 'admin'`[cite: 21].
 * JWT tokens must be verified on all protected mutation/write routes[cite: 21].
 
+### Admin-Assisted Password Reset
+No email is sent (zero-cost deployment, no domain). Flow:
+1. Student clicks **Forgot password?** on `/login` → `/forgot-password` tells them to message the admin (link from `VITE_ADMIN_CONTACT_URL`) with full name and student ID.
+2. Admin confirms identity out-of-band, opens the student in the Student Directory, clicks **Generate reset link**. The link (`/reset-password/:token`) is copied to the clipboard and shared via Messenger.
+3. Student sets a new password at `/reset-password/:token`.
+
+Rules:
+* Token is 32 random bytes (hex); only its SHA-256 hash is stored (`passwordResetTokenHash`, `passwordResetExpires`).
+* Token expires after 30 minutes, is single-use (atomic find-and-clear), and generating a new link invalidates the previous one.
+* A successful reset sets `passwordChangedAt`; `authGuard` rejects any JWT with `iat` earlier than it, signing the user out of all other sessions. `authGuard` also rejects tokens for deleted accounts.
+
 ## 8. Validation Rules
 * Email must match a valid RFC 5322 pattern.
 * Password must be a minimum of 8 characters containing at least 1 number and 1 letter.
@@ -49,6 +62,7 @@ The Authentication & Identity module handles user access control, credentials ve
 * `401 Unauthorized`: Returned when login credentials fail or tokens expire[cite: 21].
 * `403 Forbidden`: Returned when non-admin users attempt access to admin APIs[cite: 21].
 * `409 Conflict`: Returned if registering an existing email or username.
+* `400 INVALID_RESET_TOKEN`: Reset token is unknown, expired, or already used.
 
 ## 10. Loading States
 * Primary action button displays an inline spinning indicator during authentication requests.
@@ -72,7 +86,7 @@ The Authentication & Identity module handles user access control, credentials ve
 
 ## 15. Future Expansion Points
 * Integration with OAuth2 providers (GitHub, Google Single Sign-On).
-* Password reset via email verification tokens.
+* Self-service password reset by email once a sending domain is available (replace step 2 of the admin-assisted flow).
 
 ## 16. Acceptance Criteria
 * GIVEN valid student credentials, WHEN submitted via `LoginForm`, THEN user is authenticated and redirected to the home feed or dashboard[cite: 23, 24].

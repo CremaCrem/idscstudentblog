@@ -1,9 +1,11 @@
 const { verifyToken } = require('../utils/jwt');
+const User = require('../models/User');
 
 /**
  * Middleware: Validates JWT Access Token on protected endpoints
  */
-const authGuard = (req, res, next) => {
+const authGuard = async (req, res, next) => {
+  let decoded;
   try {
     let token;
 
@@ -28,19 +30,35 @@ const authGuard = (req, res, next) => {
     }
 
     // Verify token validity
-    const decoded = verifyToken(token);
-    req.user = decoded; // { userId, username, role }
-    next();
+    decoded = verifyToken(token);
   } catch (error) {
-    return res.status(401).json({
-      success: false,
-      error: {
-        code: 'UNAUTHORIZED',
-        message: 'Invalid or expired authentication token.',
-        timestamp: new Date().toISOString()
-      }
-    });
+    return rejectToken(res);
   }
+
+  // Reject tokens for deleted accounts or issued before the last password change
+  let user;
+  try {
+    user = await User.findById(decoded.userId).select('passwordChangedAt').lean();
+  } catch (error) {
+    return next(error); // DB failure is a 500, not a reason to log the user out
+  }
+  if (!user || (user.passwordChangedAt && decoded.iat < Math.floor(user.passwordChangedAt.getTime() / 1000))) {
+    return rejectToken(res);
+  }
+
+  req.user = decoded; // { userId, username, role }
+  next();
+};
+
+const rejectToken = (res) => {
+  return res.status(401).json({
+    success: false,
+    error: {
+      code: 'UNAUTHORIZED',
+      message: 'Invalid or expired authentication token.',
+      timestamp: new Date().toISOString()
+    }
+  });
 };
 
 /**

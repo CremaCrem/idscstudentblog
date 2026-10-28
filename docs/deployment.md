@@ -11,6 +11,7 @@ This guide covers setup, environment parameters, build processes, and deployment
 | Variable | Description | Example / Allowed Values |
 | :--- | :--- | :--- |
 | `VITE_API_BASE_URL` | Fully qualified base URL of the Render backend. | `https://student-blog-api.onrender.com/api` |
+| `VITE_ADMIN_CONTACT_URL` | Optional. Messenger link shown on `/forgot-password` for admin-assisted resets. Button is hidden if unset. | `https://m.me/your.username` |
 
 ### Backend Environment Variables (`backend/.env`)
 

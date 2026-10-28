@@ -1,5 +1,5 @@
 const authService = require('../services/authService');
-const { validateRegisterInput, validateLoginInput } = require('../validators/authValidator');
+const { validateRegisterInput, validateLoginInput, validateResetPasswordInput } = require('../validators/authValidator');
 const { getCookieOptions } = require('../utils/jwt');
 
 class AuthController {
@@ -86,6 +86,36 @@ class AuthController {
       success: true,
       message: 'Successfully logged out.'
     });
+  }
+
+  /**
+   * Handler for consuming an admin-issued password reset token
+   * POST /api/v1/auth/reset-password
+   */
+  async resetPassword(req, res, next) {
+    try {
+      const validation = validateResetPasswordInput(req.body);
+      if (!validation.isValid) {
+        return res.status(400).json({
+          success: false,
+          error: {
+            code: 'VALIDATION_ERROR',
+            message: 'Invalid input provided for password reset.',
+            details: validation.errors,
+            timestamp: new Date().toISOString()
+          }
+        });
+      }
+
+      await authService.resetPassword(req.body);
+
+      return res.status(200).json({
+        success: true,
+        message: 'Your password has been reset. You can now log in with your new password.'
+      });
+    } catch (error) {
+      next(error);
+    }
   }
 
   /**

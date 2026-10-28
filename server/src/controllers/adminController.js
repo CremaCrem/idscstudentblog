@@ -1,6 +1,7 @@
 const BlogPost = require('../models/BlogPost');
 const User = require('../models/User');
 const healthCheckService = require('../services/healthCheckService');
+const authService = require('../services/authService');
 
 /**
  * Get system metrics for admin dashboard
@@ -336,7 +337,25 @@ const getUserProfile = async (req, res) => {
     }
 };
 
+/**
+ * Generate a one-time password reset token for a user (admin-assisted reset).
+ * The admin shares the resulting link with the student out-of-band (e.g. Messenger).
+ */
+const generateResetLink = async (req, res) => {
+    try {
+        const { token, expiresAt } = await authService.createPasswordResetToken(req.params.id);
+        res.json({ success: true, data: { token, expiresAt } });
+    } catch (error) {
+        if (error.statusCode === 404) {
+            return res.status(404).json({ success: false, error: { message: 'User not found' } });
+        }
+        console.error('Error generating reset link:', error);
+        res.status(500).json({ success: false, error: { message: 'Failed to generate reset link' } });
+    }
+};
+
 module.exports = {
+    generateResetLink,
     getMetrics,
     getAllBlogs,
     togglePublishStatus,

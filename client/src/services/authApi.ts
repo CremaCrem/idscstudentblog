@@ -17,6 +17,11 @@ export const authApi = {
     return response.data;
   },
 
+  resetPassword: async (payload: { token: string; password: string }) => {
+    const response = await apiClient.post<AuthResponse>('/auth/reset-password', payload);
+    return response.data;
+  },
+
   getMe: async () => {
     const response = await apiClient.get<AuthResponse>('/auth/me');
     return response.data;

@@ -67,7 +67,10 @@ export const LoginPage: React.FC = () => {
               />
             </div>
             <div className="flex flex-col gap-2">
-              <label className="text-sm font-medium text-zinc-900">Password</label>
+              <div className="flex items-center justify-between">
+                <label className="text-sm font-medium text-zinc-900">Password</label>
+                <Link to="/forgot-password" className="text-sm text-emerald-800 font-medium hover:underline">Forgot password?</Link>
+              </div>
               <Input 
                 type="password" 
                 placeholder="••••••••" 

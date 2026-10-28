@@ -26,5 +26,6 @@ router.get('/users/:id', adminController.getUserProfile);
 router.patch('/users/:id/approve', adminController.approveUser);
 router.patch('/users/:id/reject', adminController.rejectUser);
 router.delete('/users/:id', adminController.deleteUser);
+router.post('/users/:id/reset-link', adminController.generateResetLink);
 
 module.exports = router;

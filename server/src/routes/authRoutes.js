@@ -7,6 +7,7 @@ const { authGuard } = require('../middleware/authMiddleware');
 router.post('/register', authController.register);
 router.post('/login', authController.login);
 router.post('/logout', authController.logout);
+router.post('/reset-password', authController.resetPassword);
 
 // Protected session route
 router.get('/me', authGuard, authController.getMe);

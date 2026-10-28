@@ -3,7 +3,7 @@ import { adminService, type StudentProfileData } from '../../services/adminServi
 import { Badge } from '../ui/Badge';
 import { Button } from '../ui/Button';
 import { ConfirmationModal } from '../ui/ConfirmationModal';
-import { Loader2, X, ArrowUpRight, Calendar, Mail, User as UserIcon, ShieldAlert, Hash } from 'lucide-react';
+import { Loader2, X, ArrowUpRight, Calendar, Mail, User as UserIcon, ShieldAlert, Hash, KeyRound } from 'lucide-react';
 import type { BlogPost } from '../../services/blog';
 
 interface StudentProfileModalProps {
@@ -20,7 +20,11 @@ export const StudentProfileModal: React.FC<StudentProfileModalProps> = ({ userId
     const [confirmAction, setConfirmAction] = useState<{ type: 'deleteBlog' | 'unpublish', blogId?: string } | null>(null);
     const [isConfirming, setIsConfirming] = useState(false);
 
+    const [resetLink, setResetLink] = useState<{ url: string; expiresAt: string; copied: boolean } | null>(null);
+    const [isGeneratingLink, setIsGeneratingLink] = useState(false);
+
     useEffect(() => {
+        setResetLink(null);
         if (!isOpen || !userId) return;
 
         const fetchData = async () => {
@@ -64,6 +68,27 @@ export const StudentProfileModal: React.FC<StudentProfileModalProps> = ({ userId
             });
         } catch (err) {
             console.error('Failed to toggle publish status', err);
+        }
+    };
+
+    const handleGenerateResetLink = async () => {
+        if (!userId) return;
+        setIsGeneratingLink(true);
+        try {
+            const { token, expiresAt } = await adminService.generateResetLink(userId);
+            const url = `${window.location.origin}/reset-password/${token}`;
+            let copied = false;
+            try {
+                await navigator.clipboard.writeText(url);
+                copied = true;
+            } catch {
+                // Clipboard can be blocked; the link is still shown for manual copy
+            }
+            setResetLink({ url, expiresAt, copied });
+        } catch (err) {
+            console.error('Failed to generate reset link', err);
+        } finally {
+            setIsGeneratingLink(false);
         }
     };
 
@@ -158,6 +183,34 @@ export const StudentProfileModal: React.FC<StudentProfileModalProps> = ({ userId
                                         <div className="text-3xl font-display font-bold text-zinc-900 mb-1">{profileData.blogs.length}</div>
                                         <div className="text-xs font-medium text-zinc-500 uppercase tracking-wider">Posts</div>
                                     </div>
+                                </div>
+
+                                {/* Admin-assisted password reset */}
+                                <div className="mt-6 pt-6 border-t border-zinc-200 flex flex-col gap-3">
+                                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                                        <p className="text-sm text-zinc-600 m-0">
+                                            Confirm the student's identity first, then send them the one-time link (valid for 30 minutes).
+                                        </p>
+                                        <Button variant="outline" size="sm" className="shrink-0" onClick={handleGenerateResetLink} disabled={isGeneratingLink}>
+                                            {isGeneratingLink ? <Loader2 className="w-4 h-4 animate-spin" /> : <KeyRound className="w-4 h-4" />}
+                                            Generate reset link
+                                        </Button>
+                                    </div>
+                                    {resetLink && (
+                                        <div className="flex flex-col gap-1">
+                                            <input
+                                                readOnly
+                                                value={resetLink.url}
+                                                onFocus={e => e.target.select()}
+                                                aria-label="Password reset link"
+                                                className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 font-mono text-xs text-zinc-700"
+                                            />
+                                            <span className="text-xs text-zinc-500">
+                                                {resetLink.copied ? 'Copied to clipboard. ' : ''}
+                                                Expires at {new Date(resetLink.expiresAt).toLocaleTimeString()}. Generating a new link invalidates this one.
+                                            </span>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
 

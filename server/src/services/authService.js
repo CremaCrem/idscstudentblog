@@ -1,6 +1,11 @@
+const crypto = require('crypto');
 const User = require('../models/User');
 const { hashPassword, comparePassword } = require('../utils/password');
 const { signToken } = require('../utils/jwt');
+
+const RESET_TOKEN_TTL_MS = 30 * 60 * 1000; // 30 minutes
+
+const hashResetToken = (token) => crypto.createHash('sha256').update(token).digest('hex');
 
 class AuthService {
   /**
@@ -128,6 +133,55 @@ class AuthService {
       },
       token
     };
+  }
+
+  /**
+   * Issues a one-time password reset token (admin-assisted flow).
+   * Replaces any previous unused token for the user.
+   */
+  async createPasswordResetToken(userId) {
+    const token = crypto.randomBytes(32).toString('hex');
+    const expiresAt = new Date(Date.now() + RESET_TOKEN_TTL_MS);
+
+    const user = await User.findByIdAndUpdate(userId, {
+      passwordResetTokenHash: hashResetToken(token),
+      passwordResetExpires: expiresAt
+    });
+
+    if (!user) {
+      const error = new Error('User account not found.');
+      error.statusCode = 404;
+      error.code = 'NOT_FOUND';
+      throw error;
+    }
+
+    return { token, expiresAt };
+  }
+
+  /**
+   * Consumes a reset token and sets a new password.
+   * Bumps passwordChangedAt so every previously issued JWT is rejected.
+   */
+  async resetPassword({ token, password }) {
+    const hashedPassword = await hashPassword(password);
+
+    // Atomic find-and-clear so the same token cannot be used twice concurrently
+    const user = await User.findOneAndUpdate(
+      { passwordResetTokenHash: hashResetToken(token), passwordResetExpires: { $gt: new Date() } },
+      {
+        password: hashedPassword,
+        passwordChangedAt: new Date(),
+        passwordResetTokenHash: null,
+        passwordResetExpires: null
+      }
+    );
+
+    if (!user) {
+      const error = new Error('This reset link is invalid or has expired. Please ask the administrator for a new one.');
+      error.statusCode = 400;
+      error.code = 'INVALID_RESET_TOKEN';
+      throw error;
+    }
   }
 
   /**

@@ -75,6 +75,21 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: [true, 'Terms version is required'],
       default: '1.0'
+    },
+    // Admin-assisted password reset — only the SHA-256 hash of the one-time token is stored.
+    passwordResetTokenHash: {
+      type: String,
+      default: null,
+      index: true
+    },
+    passwordResetExpires: {
+      type: Date,
+      default: null
+    },
+    // Tokens issued before this timestamp are rejected by authGuard.
+    passwordChangedAt: {
+      type: Date,
+      default: null
     }
   },
   {
@@ -82,6 +97,7 @@ const userSchema = new mongoose.Schema(
     toJSON: {
       transform: function (doc, ret) {
         delete ret.password;
+        delete ret.passwordResetTokenHash;
         return ret;
       }
     }
